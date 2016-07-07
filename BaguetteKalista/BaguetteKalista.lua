@@ -81,7 +81,7 @@ local QSSGet = 0
 -- Kite
 local AAON = 0
 --- Starting AutoUpdate
-local version = "0.30003"
+local version = "0.30004"
 local author = "spyk"
 local SCRIPT_NAME = "BaguetteKalista"
 local AUTOUPDATE = true
@@ -444,7 +444,6 @@ end
 function LoadSXOrb()
 	if FileExist(LIB_PATH .. "/SxOrbWalk.lua") then
 		require("SxOrbWalk")
-		EnvoiMessage("Loaded SxOrbWalk")
 		Param:addSubMenu("SxOrbWalk", "SXMenu")
 		SxOrb:LoadToMenu(Param.SXMenu)
 	else
@@ -455,7 +454,6 @@ end
 function LoadSimpleOrb()
 	if FileExist(LIB_PATH.."/S1mpleorbWalker.lua") then
 		require("S1mpleOrbWalker")
-		EnvoiMessage("Loaded Simple OrbWalker")
 	else
 		local Host = "scarjit.de"
 		local Path = "/S1mpleScripts/Scripts/BolStudio/OrbWalker/S1Loader.lua".."?rand="..math.random(1,10000)
@@ -505,7 +503,6 @@ end
 function LoadSACR()
 	if _G.Reborn_Initialised then
 	elseif _G.Reborn_Loaded then
-		EnvoiMessage("Loaded SAC:R")
 	else
 		DelayAction(function()EnvoiMessage("Failed to Load SAC:R")end, 7)
 	end 
@@ -513,8 +510,6 @@ end
 
 function LoadPewalk()
 	if _Pewalk then
-		EnvoiMessage("Loaded Pewalk")
-		DelayAction(function ()EnvoiMessage("[Pewalk] Disable every spell usage in Pewalk for better performances with my script.")end, 7)
 	elseif not _Pewalk then
 		EnvoiMessage("Pewalk loading error")
 	end
@@ -523,7 +518,6 @@ end
 function LoadVPred()
 	if FileExist(LIB_PATH .. "/VPrediction.lua") then
 		require("VPrediction")
-		EnvoiMessage("Succesfully loaded VPred")
 		VP = VPrediction()
 	else
 		local Host = "raw.githubusercontent.com"
@@ -769,7 +763,7 @@ function LaneClear()
 		if not ManaQJungle() and myHero:CanUseSpell(_Q) == READY then
 			jungleMinions:update()
 			for i, jungleMinion in pairs(jungleMinions.objects) do
-				if jungleMinion ~= nil and GetDistance(jungleMinion) < 1150 and not jungleMinion.dead and not CPASBOJEU[jungleMinion.name] then
+				if jungleMinion ~= nil and jungleMinion.type == "obj_AI_Minion" and GetDistance(jungleMinion) < 1150 and not jungleMinion.dead and not CPASBOJEU[jungleMinion.name] then
 					CastPosition,  HitChance,  Position = VP:GetLineCastPosition(jungleMinion, SkillQ.delay, 70, 1150, SkillQ.speed, myHero, true)
 					if HitChance >= 2 then
 						CastSpell(_Q, CastPosition.x, CastPosition.z)
@@ -2703,6 +2697,5 @@ function LoadSpikeLib()
 		DelayAction(function () require("SpikeLib") end, 5)
 	else
 		require("SpikeLib")
-		DelayAction(function ()EnvoiMessage("Loaded Libraries with success!") end, 3)
 	end
 end
