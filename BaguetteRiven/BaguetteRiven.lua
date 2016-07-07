@@ -563,8 +563,8 @@ function Riven:ComboStarted()
 					self.Etape = 4;
 				end
 			elseif self.Etape == 4 then
-				CastSpell(_W)
-				if self.QReady == true then
+				if self.QReady == true and self.WReady == true then
+					self:CastW(Target);
 					self:SpykOP(Target);
 					if self.Tiamat == true and self.TiamatReady == true then
 						self:CastT(Target);
@@ -572,8 +572,9 @@ function Riven:ComboStarted()
 					end
 					CastSpell(_Q, Target.x, Target.z);
 					self:SpykOP(Target);
-				elseif self.QReady == false then
+				elseif self.QReady == false and self.WReady == true then
 					self.Etape = 5;
+					self:CastW(Target);
 					self:SpykOP(Target);
 					if self.Tiamat == true and self.TiamatReady == true then
 						self:CastT(Target);
