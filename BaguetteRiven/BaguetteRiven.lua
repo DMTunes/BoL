@@ -15,7 +15,7 @@ local buffs = {
 	["NocturneW"] = true,
 	["kindredrnodeathbuff"] = true
 };
-local version = "0.1";
+local version = "0.11";
 local author = "spyk";
 local SCRIPT_NAME = "BaguetteRiven";
 local AUTOUPDATE = true;
@@ -563,8 +563,8 @@ function Riven:ComboStarted()
 					self.Etape = 4;
 				end
 			elseif self.Etape == 4 then
-				if self.QReady == true and self.WReady == true then
-					self:CastW(Target);
+				CastSpell(_W)
+				if self.QReady == true then
 					self:SpykOP(Target);
 					if self.Tiamat == true and self.TiamatReady == true then
 						self:CastT(Target);
@@ -572,9 +572,8 @@ function Riven:ComboStarted()
 					end
 					CastSpell(_Q, Target.x, Target.z);
 					self:SpykOP(Target);
-				elseif self.QReady == false and self.WReady == true then
+				elseif self.QReady == false then
 					self.Etape = 5;
-					self:CastW(Target);
 					self:SpykOP(Target);
 					if self.Tiamat == true and self.TiamatReady == true then
 						self:CastT(Target);
@@ -831,8 +830,15 @@ function Riven:Flee()
 end
 
 function Riven:GetTarget()
-	if ValidTarget(ts.target) and ts.target.type == myHero.type then
-		return ts.target
+	if _G.AutoCarry and _G.AutoCarry.Keys and _G.Reborn_Loaded ~= nil then
+		t = _G.AutoCarry.Crosshair:GetTarget();
+	elseif _Pewalk then
+		t = _Pewalk.GetTarget();
+	elseif _G.NebelwolfisOrbWalkerLoaded then
+		t = _G.NebelwolfisOrbWalker:GetTarget();
+	end
+	if ValidTarget(t) and t.type == myHero.type then
+		return t
 	else
 		return nil
 	end
