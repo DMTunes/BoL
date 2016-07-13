@@ -15,7 +15,7 @@ local buffs = {
 	["NocturneW"] = true,
 	["kindredrnodeathbuff"] = true
 };
-local version = "0.11";
+local version = "0.111";
 local author = "spyk";
 local SCRIPT_NAME = "BaguetteRiven";
 local AUTOUPDATE = true;
@@ -265,7 +265,6 @@ function Riven:CustomLoad()
 
 	AddTickCallback(function()
 		if not myHero.dead then
-			ts:update();
 			Target = self:GetTarget();
 
 			self:ComboStarted();
@@ -1165,9 +1164,6 @@ function Riven:Menu()
 
 	enemyMinions = minionManager(MINION_ENEMY, 700, myHero, MINION_SORT_HEALTH_ASC);
 	jungleMinions = minionManager(MINION_JUNGLE, 700, myHero, MINION_SORT_MAXHEALTH_DEC);
-	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1000, DAMAGE_MAGIC);
-	ts.name = "Riven";
-	Param:addTS(ts);
 end
 
 function Riven:Move(unit)
