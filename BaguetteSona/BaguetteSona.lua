@@ -51,7 +51,7 @@ local ExhaustI = "Zed", "Yasuo", "Vayne", "Twitch", "Varus", "Tryndamere", "Tris
 local OnRecall = 0
 
 --- Starting AutoUpdate
-local version = "0.301"
+local version = "0.302"
 local author = "spyk"
 local SCRIPT_NAME = "BaguetteSona"
 local AUTOUPDATE = true
@@ -226,11 +226,6 @@ function OnTick()
 		Consommables()
 		KillSteal()
 		Keys()
-		if Ignite or Exhaust then
-			if Param.Miscellaneous.SummonerSetting.Enable then 
-				SummonerManager() 
-			end
-		end
 		if Param.Miscellaneous.RSettings.Enable then
 			AutoR()
 		end
