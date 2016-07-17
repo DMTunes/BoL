@@ -1,12 +1,15 @@
 if myHero.charName ~= "Yasuo" then return end
 
 function OnLoad()
+	Menu();
+	Flash = nil;
 	if myHero:GetSpellData(SUMMONER_1).name:lower():find("summonerflash") then 
 		Flash = SUMMONER_1;
 	elseif myHero:GetSpellData(SUMMONER_2).name:lower():find("summonerflash") then 
 		Flash = SUMMONER_2;
 	end
 	Q = false;
+	R = false;
 	FlashReady = false;
 	havetoflash = false;
 end
@@ -16,6 +19,11 @@ function OnTick()
 		Q = true;
 	else
 		Q = false;
+	end
+	if myHero:CanUseSpell(_R) == READY then
+		R = true;
+	else
+		R = false;
 	end
 	Target = GetTarget();
 	if myHero:GetSpellData(Flash).currentCd == 0 or myHero:CanUseSpell(Flash) == READY then
@@ -62,7 +70,7 @@ function OnAnimation(unit, animation)
 		if animation == "Spell3" then
 			if Q3 then
 				if Q and FlashReady then
-					if Target ~= nil then
+					if Target ~= nil and GetDistanceSqr(Target) < 180625 then
 						if CanFlashQ3() then
 							CastSpell(_Q, myHero.x, myHero.z);
 							havetoflash = true;
@@ -75,19 +83,114 @@ function OnAnimation(unit, animation)
 end
 
 function CanFlashQ3()
-	return true
+	if Target ~= nil then
+		if Param.Enable then
+			if Param.key then
+				print("true")
+				return true
+			elseif Param.QE and Target.health < q3Dmg(Target) + eDmg(Target) and EnemyInRange() == 1 then
+				return true
+			elseif Param.Auto and CanHit(Param.HowMuch) then
+				return true
+			else
+				return false
+			end
+		else
+			return false
+		end
+	else
+		return false
+	end
 end
 
 function q3Dmg(unit)
 	local l = myHero:GetSpellData(_Q).level;
-	local r = l * 20;
-	local d_t = myHero.totalDamage + r;
-	return math.floor(myHero:CalcDamage(unit, d_t))
+	if l > 0 then
+		local r = l * 20;
+		local d_t = myHero.totalDamage + r;
+		local crit = math.round(math.abs(myHero.critChance)*100);
+		if crit == 100 then
+			d_t = d_t * 1.9;
+		end
+		return math.floor(myHero:CalcDamage(unit, d_t))
+	else
+		return 0
+	end
 end
 
 function eDmg(unit)
 	local l = myHero:GetSpellData(_E).level;
-	local r = l * 20 + 50;
-	local d_t = (myHero.ap * .6) + r;
-	return math.floor(myHero:CalcMagicDamage(unit, d_t))
+	if l > 0 then
+		local r = l * 20 + 50;
+		local d_t = (myHero.ap * .6) + r;
+		return math.floor(myHero:CalcMagicDamage(unit, d_t))
+	else
+		return 0
+	end
+end
+
+function OnDraw()
+	if Target ~= nil then
+		local damages = q3Dmg(Target) + eDmg(Target);
+		if damages > Target.health and CanFlashQ3() then
+			DrawText3D("Killable with BeyBlade", Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
+		else
+			DrawText3D(math.round(Target.health-damages).."", Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
+		end
+	end
+	if CanFlashQ3() then
+		if Q and E and Q3 and FlashReady then
+			DrawText3D("BeyBlade : READY", myHero.x, myHero.y, myHero.z, 30, ARGB(255, 39, 174, 96), 0);
+		else
+			if Q  == false then
+				DrawText3D("Q", myHero.x+50, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
+			end
+			if E  == false then
+				DrawText3D("E", myHero.x+100, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
+			end
+			if Q3 == false  then
+				DrawText3D("Q3", myHero.x+150, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
+			end
+			if FlashReady == false then
+				DrawText3D("FLASH", myHero.x+250, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
+			end
+		end
+	end
+end
+
+function Menu()
+	Param = scriptConfig("BeyBlade Settings", "BeyBlade");
+
+	Param:addParam("Enable", "Enable BeyBlade :", SCRIPT_PARAM_ONOFF, true);
+	Param:addParam("n1", "", SCRIPT_PARAM_INFO, "");
+	Param:addParam("QE", "Use BeyBlade with can kill with Q3 + E :", SCRIPT_PARAM_ONOFF, true);
+	Param:addParam("n2", "And also 1 enemy in range.", SCRIPT_PARAM_INFO, "");
+	Param:addParam("n3", "", SCRIPT_PARAM_INFO, "");
+	Param:addParam("Auto", "Use BeyBlade is there is X enemy to hit :", SCRIPT_PARAM_ONOFF, true);
+	Param:addParam("HowMuch", "Set a number for X enemy :", SCRIPT_PARAM_SLICE, 3, 0, 5);
+	Param:addParam("n4", "", SCRIPT_PARAM_INFO, "");
+	Param:addParam("key", "Key to toggle on everytime :", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("T"));
+end
+
+function EnemyInRange()
+	for _, unit in pairs(GetEnemyHeroes()) do
+		if ValidTarget(unit) and not unit.dead and unit.visible and unit.health > 0 and GetDistanceSqr(unit) < 2250000 then
+			n = n + 1;
+		end
+	end
+	return n
+end
+
+function CanHit(nbr)
+	local n = 0;
+	for _, unit in pairs(GetEnemyHeroes()) do
+		if ValidTarget(unit) and not unit.dead and unit.visible and unit.health > 0 and GetDistanceSqr(Target, unit) < 105625 then
+			n = n + 1;
+		end
+	end
+	if n >= nbr then
+		return true
+	else
+		return false
+	end
 end
