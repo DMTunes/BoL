@@ -8,6 +8,7 @@ function OnLoad()
 	end
 	Q = false;
 	FlashReady = false;
+	havetoflash = false;
 end
 
 function OnTick()
@@ -21,6 +22,10 @@ function OnTick()
 		FlashReady = true;
 	else
 		FlashReady = false;
+	end
+	if havetoflash then
+		CastSpell(Flash, Target.x, Target.z);
+		havetoflash = false;
 	end
 end
 
@@ -52,49 +57,25 @@ function OnRemoveBuff(unit, buff)
 	end
 end
 
--- function OnAnimation(unit, animation)
--- 	if unit.isMe then
--- 		if animation == "Spell3" then
--- 			if Q3 then
--- 				if Q and FlashReady then
--- 					if Target ~= nil then
--- 						FlashQ3();
--- 					end
--- 				end
--- 			end
--- 		end
--- 	end
--- end
-
-function OnProcessSpell(unit, spell)
-	if unit.isMe and spell.name:lower() == "yasuodashwrapper" then
-		if Q3 then
-			if Q and FlashReady then
-				if Target ~= nil then
-					FlashQ3();
+function OnAnimation(unit, animation)
+	if unit.isMe then
+		if animation == "Spell3" then
+			if Q3 then
+				if Q and FlashReady then
+					if Target ~= nil then
+						if CanFlashQ3() then
+							CastSpell(_Q, myHero.x, myHero.z);
+							havetoflash = true;
+						end
+					end
 				end
 			end
 		end
 	end
 end
 
-function FlashQ3()
-	if GetDistanceSqr(Target) < 180625 then
-		CastSpell(_Q, myHero.x, myHero.z);
-		CastSpell(Flash, Target.x, Target.z);
-	end
-	-- print(Target)
-	-- print(NbrPeople)
-	-- if NbrPeople() == 1 and Target ~= nil then
-	-- 	if Target.health < eDmg(Target) + q3Dmg(Target) then
-	-- 		CastSpell(_Q, myHero.x, myHero.z);
-	-- 		CastSpell(Flash, Target.x, Target.z);
-	-- 	elseif R and Target.health < Target.maxHealth / 2 then
-
-	-- 	end
-	-- else
-
-	-- end
+function CanFlashQ3()
+	return true
 end
 
 function NbrPeople(t, r)
