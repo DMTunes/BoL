@@ -15,6 +15,16 @@ function OnTick()
 	else
 		Q = false;
 	end
+	Target = GetTarget();
+	if myHero:GetSpellData(Flash).currentCd == 0 or myHero:CanUseSpell(Flash) == READY then
+		FlashReady = true;
+	else
+		FlashReady = false;
+	end
+end
+
+function GetTarget()
+	local t = nil;
 	if _G.AutoCarry and _G.AutoCarry.Keys and _G.Reborn_Loaded ~= nil then
 		t = _G.AutoCarry.Crosshair:GetTarget();
 	end
@@ -22,11 +32,6 @@ function OnTick()
 		return t
 	else
 		return nil
-	end
-	if myHero:GetSpellData(Flash).currentCd == 0 or myHero:CanUseSpell(Flash) == READY then
-		FlashReady = true;
-	else
-		FlashReady = false;
 	end
 end
 
@@ -59,16 +64,20 @@ function OnAnimation(unit, animation)
 end
 
 function FlashQ3()
-	if NbrPeople() == 1 and Target ~= nil then
-		if Target.health < eDmg(Target) + q3Dmg(Target) then
-			CastSpell(_Q, myHero.x, myHero.z);
-			CastSpell(Flash, Target.x, Target.z);
-		elseif R and Target.health < Target.maxHealth / 2 then
+	CastSpell(_Q, myHero.x, myHero.z);
+	CastSpell(Flash, Target.x, Target.z);
+	-- print(Target)
+	-- print(NbrPeople)
+	-- if NbrPeople() == 1 and Target ~= nil then
+	-- 	if Target.health < eDmg(Target) + q3Dmg(Target) then
+	-- 		CastSpell(_Q, myHero.x, myHero.z);
+	-- 		CastSpell(Flash, Target.x, Target.z);
+	-- 	elseif R and Target.health < Target.maxHealth / 2 then
 
-		end
-	else
+	-- 	end
+	-- else
 
-	end
+	-- end
 end
 
 function NbrPeople(t, r)
