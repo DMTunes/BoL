@@ -159,17 +159,17 @@ function Ryze:CastQ(t, y)
 			end
 		end
 		if Param.Pred == 1 then
-			local CastPosition, HitChance, Position = VP:GetLineCastPosition(unit, .25, 50, 1000, 1700, myHero, false);
+			local CastPosition, HitChance, Position = VP:GetLineCastPosition(t, .25, 50, 1000, 1700, myHero, false);
 			if HitChance > 1 then
 				CastSpell(_Q, CastPosition.x, CastPosition.z);
 			end
 		elseif Param.Pred == 2 then
-			local Position, HitChance = HPred:GetPredict(HPSkillshot({type = "DelayLine", delay = .25, range = 1000, speed = 1700, collisionH = false, collisionM = true, width = 100}), unit, myHero);
+			local Position, HitChance = HPred:GetPredict(HPSkillshot({type = "DelayLine", delay = .25, range = 1000, speed = 1700, collisionH = false, collisionM = true, width = 100}), t, myHero);
 			if HitChance > 0 then
 				CastSpell(_Q, Position.x, Position.z);
 			end
 		elseif Param.Pred == 3 then
-			local pos, hc, info = FHPrediction.GetPrediction({range = 1000, speed = 1700, delay = .25, radius = 50, collison = true}, unit);
+			local pos, hc, info = FHPrediction.GetPrediction({range = 1000, speed = 1700, delay = .25, radius = 50, collison = true}, t);
 			if hc > 0 then
 				CastSpell(_Q, pos.x, pos.z);
 			end
@@ -650,6 +650,15 @@ function Ryze:Modes()
 	end
 end
 
+function Ryze:Mana(Mode, Spell)
+	local reqMana = Param[Mode] and Param[Mode]["Mana"..Spell] or 101;
+	if 100 * myHero.mana / myHero.maxMana > reqMana then
+		return true
+	else
+		return false
+	end
+end
+
 function Ryze:PermaShow(p)
     if Param.Draw.PermaShow.Enable then
         CustomPermaShow("                         - Korean Top | "..myHero.charName.." - ", nil, true, nil, nil, nil, 0);
@@ -686,7 +695,7 @@ function Ryze:LastHit()
 end
 
 function Ryze:Update()
-	local version = "0.012";
+	local version = "0.013";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteRyze";
 	local AUTOUPDATE = true;
