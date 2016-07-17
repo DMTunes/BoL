@@ -86,7 +86,6 @@ function CanFlashQ3()
 	if Target ~= nil then
 		if Param.Enable then
 			if Param.key then
-				print("true")
 				return true
 			elseif Param.QE and Target.health < q3Dmg(Target) + eDmg(Target) and EnemyInRange() == 1 then
 				return true
@@ -173,6 +172,7 @@ function Menu()
 end
 
 function EnemyInRange()
+	local n = 0;
 	for _, unit in pairs(GetEnemyHeroes()) do
 		if ValidTarget(unit) and not unit.dead and unit.visible and unit.health > 0 and GetDistanceSqr(unit) < 2250000 then
 			n = n + 1;
