@@ -460,7 +460,7 @@ function Ryze:Menu()
 
 		if VIP_USER then Param.Misc:addSubMenu("Auto LVL Spell", "LVL");
 			Param.Misc.LVL:addParam("Enable", "Enable Auto Level Spell?", SCRIPT_PARAM_ONOFF, true);
-			Param.Misc.LVL:addParam("Combo", "LVL Spell Order :", SCRIPT_PARAM_LIST, 2, {"E > Q > W (Max Q>E)", "E > W > Q (Max Q>E)"});
+			Param.Misc.LVL:addParam("Combo", "LVL Spell Order :", SCRIPT_PARAM_LIST, 1, {"E > Q > W (Max Q>E)", "E > W > Q (Max Q>E)"});
 			Param.Misc.LVL:setCallback("Combo", function (nV)
 				if nV then
 					self:AutoLVLCombo();
@@ -681,8 +681,12 @@ function Ryze:GetTarget()
 	end
 end
 
+function Ryze:LastHit()
+	return
+end
+
 function Ryze:Update()
-	local version = "0.011";
+	local version = "0.012";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteRyze";
 	local AUTOUPDATE = true;
