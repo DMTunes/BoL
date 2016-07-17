@@ -78,18 +78,6 @@ function CanFlashQ3()
 	return true
 end
 
-function NbrPeople(t, r)
-	local z = t or myHero;
-	local x = r or 2500;
-	local n = 0;
-	for _, unit in pairs(GetEnemyHeroes()) do
-		if ValidTarget(unit) and not unit.dead and unit.visible and unit.health > 1 and GetDistance(z, unit) < x then
-			n = n + 1;
-		end
-	end
-	return n
-end
-
 function q3Dmg(unit)
 	local l = myHero:GetSpellData(_Q).level;
 	local r = l * 20;
