@@ -56,7 +56,9 @@ function OnAnimation(unit, animation)
 		if animation == "Spell3" then
 			if Q3 then
 				if Q then
-					FlashQ3();
+					if Target ~= nil then
+						FlashQ3();
+					end
 				end
 			end
 		end
