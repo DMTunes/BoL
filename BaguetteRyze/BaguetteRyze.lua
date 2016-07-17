@@ -99,7 +99,7 @@ function Ryze:AutoBuy()
 					BuyItem(3340);
 				end
 				DelayAction(function()
-					if Param.Misc.Buy.Cristal then 
+					if Param.Misc.Buy.Crist then 
 						BuyItem(1027);
 					end
 				end, 1);
@@ -231,6 +231,7 @@ end
 function Ryze:CustomLoad()
 	self:Menu();
 	self:Loader();
+	self:AutoLVLCombo()
 	self:AutoBuy();
 	self.Q = false;
 	self.W = false;
@@ -681,7 +682,7 @@ function Ryze:GetTarget()
 end
 
 function Ryze:Update()
-	local version = "0.01";
+	local version = "0.011";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteRyze";
 	local AUTOUPDATE = true;
