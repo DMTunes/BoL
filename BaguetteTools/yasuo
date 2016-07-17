@@ -1,4 +1,5 @@
 if myHero.charName ~= "Yasuo" then return end
+
 function OnLoad()
 	if myHero:GetSpellData(SUMMONER_1).name:lower():find("summonerflash") then 
 		Flash = SUMMONER_1;
@@ -51,14 +52,26 @@ function OnRemoveBuff(unit, buff)
 	end
 end
 
-function OnAnimation(unit, animation)
-	if unit.isMe then
-		if animation == "Spell3" then
-			if Q3 then
-				if Q then
-					if Target ~= nil then
-						FlashQ3();
-					end
+-- function OnAnimation(unit, animation)
+-- 	if unit.isMe then
+-- 		if animation == "Spell3" then
+-- 			if Q3 then
+-- 				if Q and FlashReady then
+-- 					if Target ~= nil then
+-- 						FlashQ3();
+-- 					end
+-- 				end
+-- 			end
+-- 		end
+-- 	end
+-- end
+
+function OnProcessSpell(unit, spell)
+	if unit.isMe and spell.name:lower() == "yasuodashwrapper" then
+		if Q3 then
+			if Q and FlashReady then
+				if Target ~= nil then
+					FlashQ3();
 				end
 			end
 		end
@@ -66,8 +79,10 @@ function OnAnimation(unit, animation)
 end
 
 function FlashQ3()
-	CastSpell(_Q, myHero.x, myHero.z);
-	CastSpell(Flash, Target.x, Target.z);
+	if GetDistanceSqr(Target) < 180625 then
+		CastSpell(_Q, myHero.x, myHero.z);
+		CastSpell(Flash, Target.x, Target.z);
+	end
 	-- print(Target)
 	-- print(NbrPeople)
 	-- if NbrPeople() == 1 and Target ~= nil then
