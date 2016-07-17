@@ -1,0 +1,98 @@
+if myHero.charName ~= "Yasuo" then return end
+function OnLoad()
+	if myHero:GetSpellData(SUMMONER_1).name:lower():find("summonerflash") then 
+		Flash = SUMMONER_1;
+	elseif myHero:GetSpellData(SUMMONER_2).name:lower():find("summonerflash") then 
+		Flash = SUMMONER_2;
+	end
+	Q = false;
+	FlashReady = false;
+end
+
+function OnTick()
+	if myHero:CanUseSpell(_Q) == READY then
+		Q = true;
+	else
+		Q = false;
+	end
+	if _G.AutoCarry and _G.AutoCarry.Keys and _G.Reborn_Loaded ~= nil then
+		t = _G.AutoCarry.Crosshair:GetTarget();
+	end
+	if ValidTarget(t) and t.type == myHero.type then
+		return t
+	else
+		return nil
+	end
+	if myHero:GetSpellData(Flash).currentCd == 0 or myHero:CanUseSpell(Flash) == READY then
+		FlashReady = true;
+	else
+		FlashReady = false;
+	end
+end
+
+function OnUpdateBuff(unit, buff, stacks)
+	if unit and unit.isMe then
+		if buff.name:lower() == "yasuoq3w" then
+			Q3 = true;
+		end
+	end
+end
+
+function OnRemoveBuff(unit, buff)
+	if unit and unit.isMe then
+		if buff.name:lower() == "yasuoq3w" then
+			Q3 = false;
+		end
+	end
+end
+
+function OnAnimation(unit, animation)
+	if unit.isMe then
+		if animation == "Spell3" then
+			if Q3 then
+				if Q then
+					FlashQ3();
+				end
+			end
+		end
+	end
+end
+
+function FlashQ3()
+	if NbrPeople() == 1 and Target ~= nil then
+		if Target.health < eDmg(Target) + q3Dmg(Target) then
+			CastSpell(_Q, myHero.x, myHero.z);
+			CastSpell(Flash, Target.x, Target.z);
+		elseif R and Target.health < Target.maxHealth / 2 then
+
+		end
+	else
+
+	end
+end
+
+function NbrPeople(t, r)
+	local z = t or myHero;
+	local x = r or 2500;
+	local n = 0;
+	for _, unit in pairs(GetEnemyHeroes()) do
+		if ValidTarget(unit) and not unit.dead and unit.visible and unit.health > 1 and GetDistance(z, unit) < x then
+			n = n + 1;
+		end
+	end
+	return n
+end
+
+function q3Dmg(unit)
+	local l = myHero:GetSpellData(_Q).level;
+	local r = l * 20;
+	local d_t = myHero.totalDamage + r;
+	return math.floor(myHero:CalcDamage(unit, d_t))
+end
+
+function eDmg(unit)
+	local l = myHero:GetSpellData(_E).level;
+	local r = l * 20 + 50;
+	local d_t = (myHero.ap * .6) + r;
+	return math.floor(myHero:CalcMagicDamage(unit, d_t))
+end
