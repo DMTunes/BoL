@@ -285,6 +285,7 @@ function Kalista:AfterUpdate()
 		self:AutoE();
 		self.Target = self:GetTarget();
 		self:WallJumpHopHop();
+		self:AutoPotion();
 	end);
 	AddApplyBuffCallback(function(source, unit, buff)
 		if self.Param.Extra.Items.QSS then
@@ -345,6 +346,9 @@ function Kalista:CastQ(t, y)
 			if not self:Mana(y, "Q") then
 				return
 			end
+		end
+		if self.Ward[unit.name] then
+			return
 		end
 		if self.Param.Pred == 1 then
 			local CastPosition, HitChance, Position = VP:GetLineCastPosition(t, .25, 70, 1000, 1750, myHero, false);
@@ -840,11 +844,11 @@ function Kalista:Menu()
 		self.Param.JungleClear:addParam("Early", "Enable Early Jungle Help Security :", SCRIPT_PARAM_ONOFF, true);
 
 	self.Param:addSubMenu("LaneClear Settings", "WaveClear");
-		self.Param.WaveClear:addParam("Q", "Use Q :", SCRIPT_PARAM_ONOFF, true);
+		self.Param.WaveClear:addParam("Q", "Use Q :", SCRIPT_PARAM_ONOFF, false);
 		self.Param.WaveClear:addParam("ManaQ", "Set a value for (Q) in Mana :", SCRIPT_PARAM_SLICE, 40, 0, 100);
 
 	self.Param:addSubMenu("LaneClear Settings (Against Champion)", "WaveClear2");
-		self.Param.WaveClear2:addParam("Q", "Use Q :", SCRIPT_PARAM_ONOFF, true);
+		self.Param.WaveClear2:addParam("Q", "Use Q :", SCRIPT_PARAM_ONOFF, false);
 		self.Param.WaveClear2:addParam("ManaQ", "Set a value for (Q) in Mana :", SCRIPT_PARAM_SLICE, 60, 0, 100);
 
 	self.Param:addSubMenu("Last Hit Settings", "LastHit");
@@ -967,7 +971,6 @@ function Kalista:OnProcessAttack(unit, spell)
 				elseif self.Mode == "LaneClear" then
 					self:LaneClear();
 				elseif self.Mode == "LastHit" then
-					self:LastHit();
 				end
 			end, .05 + GetLatency() / 1000);
 		end
@@ -978,6 +981,7 @@ function Kalista:AutoE()
 	if self.E then
 		self:KillSteal();
 		self:JungleKillSteal();
+		self:LastHit();
 	end
 end
 
@@ -1005,7 +1009,7 @@ function Kalista:JungleKillSteal()
 			if self:GetStacks(unit) > 0 and GetDistanceSqr(unit) < 1000000 and not unit.dead then
 				local dmg = self:eDmg(unit);
 				if dmg > unit.health then
-					if self.JungleClear[self.Param.JungleClear.Mod][unit.name] or (unit.charName:lower():find("dragon") and not self.Param.JungleClear.Mod == 3) then
+					if self.JungleClear[self.Param.JungleClear.Mod][unit.name] or unit.charName:lower():find("dragon") then
 						CastSpell(_E);
 					end
 				end
@@ -1067,6 +1071,7 @@ end
 
 function Kalista:LastHit()
 	if self.E and self.Param.LastHit.E then
+		if self.Mode == "Combo" then return end
 		enemyMinions:update();
 		local ccount = 0;
 		for i, unit in pairs(enemyMinions.objects) do
@@ -1105,7 +1110,7 @@ function Kalista:OnDraw()
 			DrawCircle3D(myHero.x, myHero.y, myHero.z, myHero.boundingRadius, 1, 0xFFFFFFFF);
 		end
 		if self.Param.Draw.General.Target then
-			if self.Target ~= nil then
+			if self.Target then
 				DrawText3D(">> TARGET <<", self.Target.x-100, self.Target.y-50, self.Target.z, 20, 0xFFFFFFFF);
 				DrawText(""..self.Target.charName.."", 50, 50, 200, 0xFFFFFFFF);
 			end
@@ -1199,6 +1204,12 @@ function Kalista:Var()
 		E = {range = 1000, delay = .25};
 		R = {range = 1100};
 	};
+	self.Ward = {
+		["YellowTrinket"] = true,
+		["BlueTrinket"] = true,
+		["SightWard"] = true,
+		["VisionWard"] = true,
+	};
 	self.buffs = {
 		["JudicatorIntervention"] = true,
 		["UndyingRage"] = true,
@@ -1237,6 +1248,7 @@ function Kalista:Var()
 	self.Last_LevelSpell = 0;
 	self.lastPotion = 0;
 	self.lastQSS = 0;
+	self.LastPotCheck = 0;
 	self.ActualPotTime = 0;
 	self.ActualPotName = nil;
 	self.ActualPotData = nil;
@@ -1328,12 +1340,12 @@ function Kalista:WallHOPDraw()
 end
 
 function Kalista:Update()
-	local version = "0.80001";
+	local version = "0.80003";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteKalista";
 	local UPDATE_HOST = "raw.githubusercontent.com";
 	local UPDATE_PATH = "/spyk1/BoL/master/BaguetteKalista.lua".."?rand="..math.random(1,10000);
-	local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME;
+	local UPDATE_FILE_PATH = SCRIPT_PATH.._ENV.FILE_NAME;
 	local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH;
 	local ServerData = GetWebResult(UPDATE_HOST, "/spyk1/BoL/master/BaguetteKalista.version")
 	if ServerData then
