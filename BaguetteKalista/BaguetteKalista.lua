@@ -1122,7 +1122,9 @@ function Kalista:RendDraw()
 				end
 				jungleMinions:update();
 				for i, unit in pairs(jungleMinions.objects) do
-					self:DrawRend(unit, m);
+					if self.JungleClear[self.Param.JungleClear.Mod][unit.name] or unit.charName:lower():find("dragon") then
+						self:DrawRend(unit, m);
+					end
 				end
 			elseif self.Param.Draw.Rend.n == 2 then
 				for _, unit in pairs(GetEnemyHeroes()) do
@@ -1131,7 +1133,9 @@ function Kalista:RendDraw()
 			elseif self.Param.Draw.Rend.n == 3 then
 				jungleMinions:update();
 				for i, unit in pairs(jungleMinions.objects) do
-					self:DrawRend(unit, m);
+					if self.JungleClear[self.Param.JungleClear.Mod][unit.name] or unit.charName:lower():find("dragon") then
+						self:DrawRend(unit, m);
+					end
 				end
 			end
 		end
