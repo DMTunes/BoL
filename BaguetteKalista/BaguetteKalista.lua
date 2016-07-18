@@ -911,6 +911,7 @@ function Kalista:Menu()
 			self.Param.Draw.Misc:setCallback("skins", function(skin) if skin then if self.Param.Draw.Misc.SKIN then SetSkin(myHero, self.Param.Draw.Misc.skins-1); end end end);
 			self.Param.Draw.Misc:addParam("n1", "", SCRIPT_PARAM_INFO, "");
 			self.Param.Draw.Misc:addParam("PermaShow", "Display PermaShow :", SCRIPT_PARAM_ONOFF, true);
+			self.Param.Draw.Misc:addParam("Hour", "Display Time & Latency :", SCRIPT_PARAM_ONOFF, true);
 		self.Param.Draw:addParam("Enable", "Enable Drawings :", SCRIPT_PARAM_ONOFF, true);
 
 	self.Param:addParam("n1", "", SCRIPT_PARAM_INFO, "");
@@ -1108,6 +1109,9 @@ function Kalista:OnDraw()
 				DrawText3D(">> TARGET <<", self.Target.x-100, self.Target.y-50, self.Target.z, 20, 0xFFFFFFFF);
 				DrawText(""..self.Target.charName.."", 50, 50, 200, 0xFFFFFFFF);
 			end
+		end
+		if self.Param.Draw.Misc.Hour then 
+			DrawText(os.date("%A, %B %d %Y - %X - "..GetLatency().." ms"), 15, WINDOW_W/1.45, WINDOW_W/180, 0xFFFFFFFF);
 		end
 	end
 end
@@ -1324,7 +1328,7 @@ function Kalista:WallHOPDraw()
 end
 
 function Kalista:Update()
-	local version = "0.8";
+	local version = "0.80001";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteKalista";
 	local UPDATE_HOST = "raw.githubusercontent.com";
