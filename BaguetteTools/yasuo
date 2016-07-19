@@ -1,6 +1,7 @@
 if myHero.charName ~= "Yasuo" then return end
 
 function OnLoad()
+	Lib();
 	Menu();
 	Flash = nil;
 	if myHero:GetSpellData(SUMMONER_1).name:lower():find("summonerflash") then 
@@ -16,6 +17,11 @@ function OnLoad()
 	havetoflash = false;
 	enemyMinions = minionManager(MINION_ENEMY, 850, myHero, MINION_SORT_HEALTH_ASC);
 	jungleMinions = minionManager(MINION_JUNGLE, 850, myHero, MINION_SORT_MAXHEALTH_DEC);
+	if Param.key then
+		CustomPermaShow("BeyBlade Key toggle : ("..KeyConversion(Param._param[9].key)..")", "true", true, ARGB(255, 39, 174, 96), nil, nil, 1);
+	else
+		CustomPermaShow("BeyBlade Key toggle : ("..KeyConversion(Param._param[9].key)..")", "false", true, ARGB(255, 231, 76, 60), nil, nil, 1);
+	end
 end
 
 function OnTick()
@@ -219,6 +225,13 @@ function Menu()
 	Param:addParam("HowMuch", "Set a number for X enemy :", SCRIPT_PARAM_SLICE, 3, 0, 5);
 	Param:addParam("n4", "", SCRIPT_PARAM_INFO, "");
 	Param:addParam("key", "Key to toggle on everytime :", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("T"));
+	Param:setCallback("key", function(permaShow)
+		if permaShow then
+			CustomPermaShow("BeyBlade Key toggle : ("..KeyConversion(Param._param[9].key)..")", "true", true, ARGB(255, 39, 174, 96), nil, nil, 1);
+		else
+			CustomPermaShow("BeyBlade Key toggle : ("..KeyConversion(Param._param[9].key)..")", "false", true, ARGB(255, 231, 76, 60), nil, nil, 1);
+		end
+	end);
 end
 
 function EnemyInRange()
@@ -243,4 +256,133 @@ function CanHit(nbr)
 	else
 		return false
 	end
+end
+
+function Lib()
+	local LibPath = LIB_PATH.."SpikeLib.lua"
+	if not FileExist(LibPath) then
+		local Host = "raw.github.com"
+		local Path = "/spyk1/BoL/master/bundle/SpikeLib.lua".."?rand="..math.random(1,10000)
+		EloSpikes:Alerte("Libs not found!")
+		DownloadFile("https://"..Host..Path, LibPath, function ()  end)
+		DelayAction(function () require("SpikeLib") end, 5)
+	else
+		require("SpikeLib")
+	end
+end
+
+function KeyConversion(v)
+
+    local K = {};
+    K[8] = 'Back';
+    K[9] = 'Tab';
+    K[13] = 'Enter';
+    K[16] = 'Shift';
+    K[17] = 'Ctrl';
+    K[18] = 'Alt';
+    K[19] = 'Pause';
+    K[20] = 'Capslock';
+    K[21] ='KanaMode';
+    K[23] = 'JunjaMode';
+    K[24] = 'FinalMode';
+    K[25] = 'HanjaMode';
+    K[27] = 'Esc';
+    K[28] = 'IMEConvert';
+    K[29] = 'IMENonconvert';
+    K[30] = 'IMEAceept';
+    K[31] = 'IMEModeChange';
+    K[32] = 'Space';
+    K[33] = 'PageUp';
+    K[34] = 'PageDown';
+    K[35] = 'End';
+    K[36] = 'Home';
+    K[37] = 'Left';
+    K[38] = 'Up';
+    K[39] = 'Right';
+    K[40] = 'Down';
+    K[44] = 'PrintScreen';
+    K[45] = 'Insert';
+    K[46] = 'Delete';
+    K[48] = '0';
+    K[49] = '1';
+    K[50] = '2';
+    K[51] = '3';
+    K[52] = '4';
+    K[53] = '5';
+    K[54] = '6';
+    K[55] = '7';
+    K[56] = '8';
+    K[57] = '9';
+    K[65] = 'A';
+    K[66] = 'B';
+    K[67] = 'C';
+    K[68] = 'D';
+    K[69] = 'E';
+    K[70] = 'F';
+    K[71] = 'G';
+    K[72] = 'H';
+    K[73] = 'I';
+    K[74] = 'J';
+    K[75] = 'K';
+    K[76] = 'L';
+    K[77] = 'M';
+    K[78] = 'N';
+    K[79] = 'O';
+    K[80] = 'P';
+    K[81] = 'Q';
+    K[82] = 'R';
+    K[83] = 'S';
+    K[84] = 'T';
+    K[85] = 'U';
+    K[86] = 'V';
+    K[87] = 'W';
+    K[88] = 'X';
+    K[89] = 'Y';
+    K[90] = 'Z';
+    K[91] = 'LWin';
+    K[92] = 'RWin';
+    K[93] = 'Apps';
+    K[96] = 'NumPad0';
+    K[97] = 'NumPad1';
+    K[98] = 'NumPad2';
+    K[99] = 'NumPad3';
+    K[100] = 'NumPad4';
+    K[101] = 'NumPad5';
+    K[102] = 'NumPad6';
+    K[103] = 'NumPad7';
+    K[104] = 'NumPad8';
+    K[105] = 'NumPad9';
+    K[106] = 'Multiply';
+    K[107] = 'Add';
+    K[108] = 'Separator';
+    K[109] = 'Subtract';
+    K[110] = 'Decimal';
+    K[111] = 'Divide';
+    K[112] = 'F1';
+    K[113] = 'F2';
+    K[114] = 'F3';
+    K[115] = 'F4';
+    K[116] = 'F5';
+    K[117] = 'F6';
+    K[118] = 'F7';
+    K[119] = 'F8';
+    K[120] = 'F9';
+    K[121] = 'F10';
+    K[122] = 'F11';
+    K[123] = 'F12';
+    K[144] = 'NumLock';
+    K[145] = 'ScrollLock';
+    K[186] = ';';;
+    K[187] = '=';
+    K[188] = ',';
+    K[189] = '-';
+    K[190] = '.';
+    K[191] = '/';
+    K[192] = 'Oemtilde';
+    K[219] = 'OemOpenBrackets';
+    K[220] = 'Oem5';
+    K[221] = 'Oem6';
+    K[222] = "'";
+
+    return K[v]
 end
