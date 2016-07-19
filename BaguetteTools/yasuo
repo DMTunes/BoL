@@ -81,18 +81,14 @@ function DashCheck()
 		enemyMinions:update();
 		jungleMinions:update();
 		for i, unit in pairs(enemyMinions.objects) do
-			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 180625 then
-				DelayAction(function()
-					beyblade = true;
-				end, 0.25);
+			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 40000 then
+				beyblade = true;
 				CastSpell(_E, unit);
 			end
 		end
 		for i, unit in pairs(jungleMinions.objects) do
-			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 180625 then
-				DelayAction(function()
-					beyblade = true;
-				end, 0.25);
+			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 40000 then
+				beyblade = true;
 				CastSpell(_E, unit);
 			end
 		end
@@ -114,7 +110,7 @@ end
 function CanFlashQ3(unit)
 	if unit ~= nil then
 		if Param.Enable then
-			if Param.key or (Param.QE and unit.health < q3Dmg(unit) + eDmg(unit) and EnemyInRange() == 1) or (Param.Auto and (CanHit(Param.HowMuch) and R)) then
+			if (Param.key and R) or (Param.QE and (unit.health < q3Dmg(unit) + eDmg(unit) or (R and unit.health < q3Dmg(unit) * 2 + eDmg(unit) + aaDmg(unit) + rDmg(unit))) and EnemyInRange() == 1) or (Param.Auto and (CanHit(Param.HowMuch) and R)) then
 				return true
 			else
 				return false
@@ -142,6 +138,19 @@ function q3Dmg(unit)
 	end
 end
 
+function rDmg(unit)
+	local l = myHero:GetSpellData(_R).level;
+	if l > 0 then
+		local r = l * 100 + 100;
+		local d_t = myHero.addDamage * 1.5;
+		return math.floor(myHero:CalcDamage(unit, d_t));
+	end
+end
+
+function aaDmg(unit)
+	return math.floor(myHero:CalcDamage(unit, myHero.totalDamage))
+end
+
 function eDmg(unit)
 	local l = myHero:GetSpellData(_E).level;
 	if l > 0 then
@@ -155,7 +164,12 @@ end
 
 function OnDraw()
 	if Target ~= nil then
-		local damages = q3Dmg(Target) + eDmg(Target);
+		local damages = 0;
+		if R then
+			damages = q3Dmg(Target) * 2 + eDmg(Target) + aaDmg(Target) + rDmg(Target);
+		else
+			damages = q3Dmg(Target) + eDmg(Target); 
+		end
 		if damages > Target.health + Target.shield and CanFlashQ3() then
 			DrawText3D("Overkill :"..math.round(damages - Target.health + Target.shield).."", Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
 		else
@@ -198,7 +212,7 @@ function Menu()
 
 	Param:addParam("Enable", "Enable BeyBlade :", SCRIPT_PARAM_ONOFF, true);
 	Param:addParam("n1", "", SCRIPT_PARAM_INFO, "");
-	Param:addParam("QE", "Use BeyBlade with can kill with Q3 + E :", SCRIPT_PARAM_ONOFF, true);
+	Param:addParam("QE", "Use BeyBlade if can kill with Q3 + E :", SCRIPT_PARAM_ONOFF, true);
 	Param:addParam("n2", "And also 1 enemy in range.", SCRIPT_PARAM_INFO, "");
 	Param:addParam("n3", "", SCRIPT_PARAM_INFO, "");
 	Param:addParam("Auto", "Use BeyBlade is there is X enemy to hit :", SCRIPT_PARAM_ONOFF, true);
