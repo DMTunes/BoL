@@ -48,19 +48,19 @@ function OnTick()
 	else
 		FlashReady = false;
 	end
-	if havetoe then
+	if havetoaa then
 		if Target ~= nil and E then
-			havetoe = false;
+			havetoe = true;
+			havetoaa = false;
 			DelayAction(function()
-				CastSpell(_E, Target);
-				havetor = true;
-			end, 0.1);
+				myHero:Attack(Target);
+			end, .3);
 		end
 	end
 	if havetoflash and Target ~= nil then
 		havetoflash = false;
 		CastSpell(Flash, Target.x, Target.z);
-		havetoe = true;
+		havetoaa = true;
 		DelayAction(function() havetoflash = false; end)
 	end
 	DashCheck();
@@ -142,6 +142,16 @@ function CanFlashQ3(unit)
 		end
 	else
 		return false
+	end
+end
+
+function OnProcessAttack(unit, spell)
+	if unit and unit.isMe and spell.name:lower():find("att") then
+		if havetoe and E then
+			havetoe = false;
+			CastSpell(_E, Target);
+			havetor = true;
+		end
 	end
 end
 
