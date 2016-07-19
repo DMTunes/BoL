@@ -49,6 +49,9 @@ function OnTick()
 	if havetoflash and Target ~= nil then
 		havetoflash = false;
 		CastSpell(Flash, Target.x, Target.z);
+		DelayAction(function() 
+			CastSpell(_E, Target); 
+		end, .15 + GetLatency() / 1000);
 		DelayAction(function() havetoflash = false; end)
 	end
 	DashCheck();
