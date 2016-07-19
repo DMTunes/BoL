@@ -10,8 +10,12 @@ function OnLoad()
 	end
 	Q = false;
 	R = false;
+	E = false;
+	beyblade = false;
 	FlashReady = false;
 	havetoflash = false;
+	enemyMinions = minionManager(MINION_ENEMY, 850, myHero, MINION_SORT_HEALTH_ASC);
+	jungleMinions = minionManager(MINION_JUNGLE, 850, myHero, MINION_SORT_MAXHEALTH_DEC);
 end
 
 function OnTick()
@@ -25,6 +29,11 @@ function OnTick()
 	else
 		R = false;
 	end
+	if myHero:CanUseSpell(_E) == READY then
+		E = true;
+	else
+		E = false;
+	end
 	Target = GetTarget();
 	if myHero:GetSpellData(Flash).currentCd == 0 or myHero:CanUseSpell(Flash) == READY then
 		FlashReady = true;
@@ -35,6 +44,7 @@ function OnTick()
 		CastSpell(Flash, Target.x, Target.z);
 		havetoflash = false;
 	end
+	DashCheck();
 end
 
 function GetTarget()
@@ -65,31 +75,44 @@ function OnRemoveBuff(unit, buff)
 	end
 end
 
-function OnAnimation(unit, animation)
-	if unit.isMe then
-		if animation == "Spell3" then
-			if Q3 then
-				if Q and FlashReady then
-					if Target ~= nil and GetDistanceSqr(Target) < 180625 then
-						if CanFlashQ3() then
-							CastSpell(_Q, myHero.x, myHero.z);
-							havetoflash = true;
-						end
-					end
-				end
+function DashCheck()
+	if Q3 and Q and E and FlashReady and Target ~= nil and CanFlashQ3(Target) then
+		enemyMinions:update();
+		jungleMinions:update();
+		for i, unit in pairs(enemyMinions.objects) do
+			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 180625 then
+				beyblade = true;
+				CastSpell(_E, unit);
+			end
+		end
+		for i, unit in pairs(jungleMinions.objects) do
+			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 180625 then
+				beyblade = true;
+				CastSpell(_E, unit);
 			end
 		end
 	end
 end
 
-function CanFlashQ3()
-	if Target ~= nil then
+function OnAnimation(unit, animation)
+	if unit.isMe then
+		if animation == "Spell3" then
+			if beyblade == true then
+				CastSpell(_Q, myHero.x, myHero.z);
+				havetoflash = true;
+			end
+		end
+	end
+end
+
+function CanFlashQ3(unit)
+	if unit ~= nil then
 		if Param.Enable then
 			if Param.key then
 				return true
-			elseif Param.QE and Target.health < q3Dmg(Target) + eDmg(Target) and EnemyInRange() == 1 then
+			elseif Param.QE and unit.health + Target.health < q3Dmg(unit) + eDmg(unit) and EnemyInRange() == 1 then
 				return true
-			elseif Param.Auto and CanHit(Param.HowMuch) then
+			elseif Param.Auto and CanHit(Param.HowMuch) and R then
 				return true
 			else
 				return false
@@ -131,28 +154,35 @@ end
 function OnDraw()
 	if Target ~= nil then
 		local damages = q3Dmg(Target) + eDmg(Target);
-		if damages > Target.health and CanFlashQ3() then
-			DrawText3D("Killable with BeyBlade", Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
-		else
-			DrawText3D(math.round(Target.health-damages).."", Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
+		if damages > Target.health + Target.shield and CanFlashQ3() then
+			DrawText3D("Overkill :"..damages - Target.health + Target.shield, Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
 		end
 	end
-	if CanFlashQ3() then
-		if Q and E and Q3 and FlashReady then
-			DrawText3D("BeyBlade : READY", myHero.x, myHero.y, myHero.z, 30, ARGB(255, 39, 174, 96), 0);
+	if CanFlashQ3(Target) then
+		if Q == true then
+			DrawText3D("[Q]",myHero.x-150, myHero.y-100, myHero.z+100, 20, ARGB(255, 39, 174, 96));
 		else
-			if Q  == false then
-				DrawText3D("Q", myHero.x+50, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
-			end
-			if E  == false then
-				DrawText3D("E", myHero.x+100, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
-			end
-			if Q3 == false  then
-				DrawText3D("Q3", myHero.x+150, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
-			end
-			if FlashReady == false then
-				DrawText3D("FLASH", myHero.x+250, myHero.y, myHero.z, 30, ARGB(255, 231, 76, 60), 0);
-			end
+			DrawText3D("[Q]",myHero.x-150, myHero.y-100, myHero.z+100, 20, ARGB(255, 192, 57, 43));
+		end
+		if Q3 == true then
+			DrawText3D("[Q3]",myHero.x-100, myHero.y-100, myHero.z+100, 20, ARGB(255, 39, 174, 96));
+		else
+			DrawText3D("[Q3]",myHero.x-100, myHero.y-100, myHero.z+100, 20, ARGB(255, 192, 57, 43));
+		end
+		if E == true then
+			DrawText3D("[E]",myHero.x-50, myHero.y-100, myHero.z+100, 20, ARGB(255, 39, 174, 96));
+		else
+			DrawText3D("[E]",myHero.x-50, myHero.y-100, myHero.z+100, 20, ARGB(255, 192, 57, 43));
+		end
+		if R == true then
+			DrawText3D("[R]",myHero.x, myHero.y-100, myHero.z+100, 20, ARGB(255, 39, 174, 96));
+		else
+			DrawText3D("[R]",myHero.x, myHero.y-100, myHero.z+100, 20, ARGB(255, 192, 57, 43));
+		end
+		if FlashReady == true then
+			DrawText3D("[F]",myHero.x+50, myHero.y-100, myHero.z+100, 20, ARGB(255, 39, 174, 96));
+		else
+			DrawText3D("[F]",myHero.x+50, myHero.y-100, myHero.z+100, 20, ARGB(255, 192, 57, 43));
 		end
 	end
 end
