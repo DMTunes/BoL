@@ -81,13 +81,13 @@ function DashCheck()
 		enemyMinions:update();
 		jungleMinions:update();
 		for i, unit in pairs(enemyMinions.objects) do
-			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 40000 then
+			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 90000 then
 				beyblade = true;
 				CastSpell(_E, unit);
 			end
 		end
 		for i, unit in pairs(jungleMinions.objects) do
-			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 40000 then
+			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 90000 then
 				beyblade = true;
 				CastSpell(_E, unit);
 			end
