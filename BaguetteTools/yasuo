@@ -98,6 +98,7 @@ function OnAnimation(unit, animation)
 	if unit.isMe then
 		if animation == "Spell3" then
 			if beyblade == true then
+				beyblade = false;
 				CastSpell(_Q, myHero.x, myHero.z);
 				havetoflash = true;
 			end
@@ -108,9 +109,7 @@ end
 function CanFlashQ3(unit)
 	if unit ~= nil then
 		if Param.Enable then
-			print(Param.QE and unit.health < q3Dmg(unit) + eDmg(unit) and EnemyInRange() == 1)
 			if Param.key or (Param.QE and unit.health < q3Dmg(unit) + eDmg(unit) and EnemyInRange() == 1) or (Param.Auto and (CanHit(Param.HowMuch) and R)) then
-				print("true")
 				return true
 			else
 				return false
