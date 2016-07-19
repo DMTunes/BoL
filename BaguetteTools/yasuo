@@ -108,8 +108,8 @@ function OnAnimation(unit, animation)
 end
 
 function CanFlashQ3(unit)
-	if unit ~= nil then
-		if Param.Enable then
+	if unit ~= nil and GetDistanceSqr(unit) > myHero.range * myHero.range then
+		if Param.Enable and (Param.QE or Param.Auto or Param.key) then
 			if (Param.key and R) or (Param.QE and (unit.health < q3Dmg(unit) + eDmg(unit) or (R and unit.health < q3Dmg(unit) * 2 + eDmg(unit) + aaDmg(unit) + rDmg(unit))) and EnemyInRange() == 1) or (Param.Auto and (CanHit(Param.HowMuch) and R)) then
 				return true
 			else
