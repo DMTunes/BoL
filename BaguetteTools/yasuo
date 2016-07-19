@@ -15,6 +15,7 @@ function OnLoad()
 	beyblade = false;
 	FlashReady = false;
 	havetoflash = false;
+	havetoe = false;
 	enemyMinions = minionManager(MINION_ENEMY, 850, myHero, MINION_SORT_HEALTH_ASC);
 	jungleMinions = minionManager(MINION_JUNGLE, 850, myHero, MINION_SORT_MAXHEALTH_DEC);
 	if Param.key then
@@ -46,12 +47,15 @@ function OnTick()
 	else
 		FlashReady = false;
 	end
+	if havetoe and E then
+		havetoe = false;
+		CastSpell(_E, Target);
+		CastSpell(_R)
+	end
 	if havetoflash and Target ~= nil then
 		havetoflash = false;
 		CastSpell(Flash, Target.x, Target.z);
-		DelayAction(function() 
-			CastSpell(_E, Target); 
-		end, .15 + GetLatency() / 1000);
+		havetoe = true;
 		DelayAction(function() havetoflash = false; end)
 	end
 	DashCheck();
