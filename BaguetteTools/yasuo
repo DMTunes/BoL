@@ -43,6 +43,7 @@ function OnTick()
 	if havetoflash and Target ~= nil then
 		havetoflash = false;
 		CastSpell(Flash, Target.x, Target.z);
+		DelayAction(function() havetoflash = false; end)
 	end
 	DashCheck();
 end
@@ -81,13 +82,17 @@ function DashCheck()
 		jungleMinions:update();
 		for i, unit in pairs(enemyMinions.objects) do
 			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 180625 then
-				beyblade = true;
+				DelayAction(function()
+					beyblade = true;
+				end, 0.25);
 				CastSpell(_E, unit);
 			end
 		end
 		for i, unit in pairs(jungleMinions.objects) do
 			if GetDistanceSqr(Target, unit) < 180625 and GetDistanceSqr(unit) < 180625 then
-				beyblade = true;
+				DelayAction(function()
+					beyblade = true;
+				end, 0.25);
 				CastSpell(_E, unit);
 			end
 		end
@@ -97,7 +102,7 @@ end
 function OnAnimation(unit, animation)
 	if unit.isMe then
 		if animation == "Spell3" then
-			if beyblade == true then
+			if beyblade == true and FlashReady and Target ~= nil and Q3 and Q then
 				beyblade = false;
 				CastSpell(_Q, myHero.x, myHero.z);
 				havetoflash = true;
