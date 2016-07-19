@@ -48,16 +48,12 @@ function OnTick()
 	else
 		FlashReady = false;
 	end
-	if havetoe and E then
-		havetoe = false;
-		CastSpell(_E, Target);
-		DelayAction(function()
+	if havetoe then
+		if Target ~= nil and E then
+			CastSpell(_E, Target);
 			havetor = true;
-		end, .1);
-	end
-	if havetor and R then
-		havetor = false;
-		CastSpell(_R);
+			havetoe = false;
+		end
 	end
 	if havetoflash and Target ~= nil then
 		havetoflash = false;
@@ -122,6 +118,10 @@ function OnAnimation(unit, animation)
 				beyblade = false;
 				CastSpell(_Q, myHero.x, myHero.z);
 				havetoflash = true;
+			end
+			if havetor then
+				CastSpell(_R);
+				havetor = false;
 			end
 		end
 	end
