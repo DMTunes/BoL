@@ -40,9 +40,9 @@ function OnTick()
 	else
 		FlashReady = false;
 	end
-	if havetoflash then
-		CastSpell(Flash, Target.x, Target.z);
+	if havetoflash and Target ~= nil then
 		havetoflash = false;
+		CastSpell(Flash, Target.x, Target.z);
 	end
 	DashCheck();
 end
@@ -108,11 +108,9 @@ end
 function CanFlashQ3(unit)
 	if unit ~= nil then
 		if Param.Enable then
-			if Param.key then
-				return true
-			elseif Param.QE and unit.health + Target.health < q3Dmg(unit) + eDmg(unit) and EnemyInRange() == 1 then
-				return true
-			elseif Param.Auto and CanHit(Param.HowMuch) and R then
+			print(Param.QE and unit.health < q3Dmg(unit) + eDmg(unit) and EnemyInRange() == 1)
+			if Param.key or (Param.QE and unit.health < q3Dmg(unit) + eDmg(unit) and EnemyInRange() == 1) or (Param.Auto and (CanHit(Param.HowMuch) and R)) then
+				print("true")
 				return true
 			else
 				return false
@@ -155,10 +153,14 @@ function OnDraw()
 	if Target ~= nil then
 		local damages = q3Dmg(Target) + eDmg(Target);
 		if damages > Target.health + Target.shield and CanFlashQ3() then
-			DrawText3D("Overkill :"..damages - Target.health + Target.shield, Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
+			DrawText3D("Overkill :"..math.round(damages - Target.health + Target.shield).."", Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
+		else
+			if Param.Enable and Param.QE then
+				DrawText3D("kill in :"..math.round(Target.health - damages).."", Target.x, Target.y, Target.z, 30, ARGB(255, 255, 255, 255), 0);
+			end
 		end
 	end
-	if CanFlashQ3(Target) then
+	if Target ~= nil then
 		if Q == true then
 			DrawText3D("[Q]",myHero.x-150, myHero.y-100, myHero.z+100, 20, ARGB(255, 39, 174, 96));
 		else
