@@ -172,7 +172,7 @@ function OnDraw()
 	if Target ~= nil then
 		local damages = 0;
 		if R then
-			damages = unit.maxHealth / 2;
+			damages = Target.maxHealth / 2;
 		else
 			damages = q3Dmg(Target) + eDmg(Target); 
 		end
