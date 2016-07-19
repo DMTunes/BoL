@@ -50,9 +50,11 @@ function OnTick()
 	end
 	if havetoe then
 		if Target ~= nil and E then
-			CastSpell(_E, Target);
-			havetor = true;
 			havetoe = false;
+			DelayAction(function()
+				CastSpell(_E, Target);
+				havetor = true;
+			end, 0.1);
 		end
 	end
 	if havetoflash and Target ~= nil then
