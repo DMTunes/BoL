@@ -347,7 +347,7 @@ function Kalista:CastQ(t, y)
 				return
 			end
 		end
-		if self.Ward[unit.name] then
+		if self.Ward[t.name] then
 			return
 		end
 		if self.Param.Pred == 1 then
@@ -366,7 +366,7 @@ function Kalista:CastQ(t, y)
 			end
 		elseif self.Param.Pred == 3 then
 			local pos, hc, info = FHPrediction.GetPrediction({range = 1000, speed = 1700, delay = .25, radius = 70, collision = true}, t);
-			if hc > 0 then
+			if hc > 0 and not info.collision then
 				CastSpell(_Q, pos.x, pos.z);
 			elseif t.type == myHero.type then
 				self:QEHarass();
@@ -1340,7 +1340,7 @@ function Kalista:WallHOPDraw()
 end
 
 function Kalista:Update()
-	local version = "0.80003";
+	local version = "0.80004";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteKalista";
 	local UPDATE_HOST = "raw.githubusercontent.com";
