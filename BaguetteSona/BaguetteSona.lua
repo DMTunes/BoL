@@ -51,7 +51,7 @@ local ExhaustI = "Zed", "Yasuo", "Vayne", "Twitch", "Varus", "Tryndamere", "Tris
 local OnRecall = 0
 
 --- Starting AutoUpdate
-local version = "0.302"
+local version = "0.303"
 local author = "spyk"
 local SCRIPT_NAME = "BaguetteSona"
 local AUTOUPDATE = true
@@ -799,9 +799,6 @@ function Combo()
 		if myHero.mana > Param.Combo.ManaSpam then
 			CastSpell(_W)
 			CastSpell(_E)
-		end
-		if Ignite or Exhaust and Param.Miscellaneous.SummonerSetting.Enable then
-			SummonerManager()
 		end
 	end
 end
