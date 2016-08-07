@@ -14,7 +14,7 @@ function Kalista:__init()
 end
 
 function Kalista:Alerte(msg)
-	PrintChat("<b><font color=\"#F5D76E\">></font></b> <font color=\"#fd576e\"> " .. msg .. "</font>");
+	PrintChat("<b><font color=\"#F5D76E\">></font></b> <font color=\"#FEFEE2\"> " .. msg .. "</font>");
 end
 
 function Kalista:AutoLvlSpell()
@@ -117,6 +117,7 @@ function Kalista:AutoPotion()
 end
 
 function Kalista:AutoWard() -- Credit to Ralphlol
+	if _G.SIUsage then return end
 	self.LastPos = {};
 	self.LastTime = {};
 	self.Next_WardTime = 0;
@@ -448,12 +449,12 @@ function Kalista:eDmg(unit)
 	local l = myHero:GetSpellData(_E).level;
 	local s = self:GetStacks(unit);
 	local r = 15 * l + 5;
-	local d_t = r + myHero.totalDamage * .6;
+	local d_t = math.floor(r + myHero.totalDamage * .6);
 	if s > 1 then
 		local ex = {10, 14, 19, 25, 32};
 		local mx = {.2, .225, .25, .275, .3};
-		local mux = ex[l] + mx[l] * myHero.totalDamage;
-		local F = d_t + ((s-1)*mux);
+		local mux = math.floor(ex[l] + mx[l] * myHero.totalDamage);
+		local F = math.floor(d_t + ((s-1)*mux));
 		local Dmg = math.floor(myHero:CalcDamage(unit, F));
 		if self.UnderExhaust == true then
 			Dmg = Dmg * .4;
@@ -1340,7 +1341,7 @@ function Kalista:WallHOPDraw()
 end
 
 function Kalista:Update()
-	local version = "0.80004";
+	local version = "0.80005";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteKalista";
 	local UPDATE_HOST = "raw.githubusercontent.com";
