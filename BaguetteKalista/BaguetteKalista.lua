@@ -122,7 +122,6 @@ function Kalista:AutoWard() -- Credit to Ralphlol
 	self.LastTime = {};
 	self.Next_WardTime = 0;
 	self.BuffNames = {"rengarr", "monkeykingdecoystealth", "talonshadowassaultbuff", "vaynetumblefade", "twitchhideinshadows", "khazixrstealth", "akaliwstealth"};
-    _G.GetInventorySlotItem = GetSlotItem;
     for _, c in pairs(GetEnemyHeroes()) do
         self.LastPos[c.networkID] = Vector(c);
     end
@@ -451,7 +450,7 @@ function Kalista:eDmg(unit)
 	local r = 15 * l + 5;
 	local d_t = math.floor(r + myHero.totalDamage * .6);
 	if s > 1 then
-		local ex = {10, 14, 19, 25, 32};
+		local ex = {9, 13, 18, 24, 31};
 		local mx = {.2, .225, .25, .275, .3};
 		local mux = math.floor(ex[l] + mx[l] * myHero.totalDamage);
 		local F = math.floor(d_t + ((s-1)*mux));
@@ -1341,7 +1340,7 @@ function Kalista:WallHOPDraw()
 end
 
 function Kalista:Update()
-	local version = "0.80005";
+	local version = "0.80006";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteKalista";
 	local UPDATE_HOST = "raw.githubusercontent.com";
