@@ -108,8 +108,6 @@ end
 
 function Update()
 	local version = "0.01";
-	local author = "spyk";
-	local SCRIPT_NAME = "EloSpikes";
 	local UPDATE_HOST = "raw.githubusercontent.com";
 	local UPDATE_PATH = "/spyk1/BoL/master/MetaBuild/MetaBuild.lua".."?rand="..math.random(1,10000);
 	local UPDATE_FILE_PATH = SCRIPT_PATH.._ENV.FILE_NAME;
