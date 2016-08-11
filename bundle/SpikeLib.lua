@@ -1,10 +1,10 @@
 function msg(msg)
 	
-	PrintChat("<b><font color=\"#c0392b\">[</font><i><font color=\"#27ae60\">Spike</font> <font color=\"#2980b9\">Lib</font><font color=\"#c0392b\">'</font><font color=\"#27ae60\">s</font></i><font color=\"#c0392b\">]</font></b> <font color=\"#c5eff7\"> : " .. msg .. "</font>");
+	PrintChat("<b><font color=\"#D2527F\">></font></b> <font color=\"#FEFEE2\"> " .. msg .. "</font>");
 end
 
 --- Starting AutoUpdate
-local version = "0.1";
+local version = "0.100001";
 local league = "6.16";
 local author = "spyk";
 local SCRIPT_NAME = "SpikeLib";
