@@ -86,7 +86,7 @@ function MetaBuild:GetData()
 end
 
 function MetaBuild:OnDraw()
-	if self.MetaBuild.Enable and self.UseMetabuild then
+	if self.MetaBuild.Enable and (self.UseMetabuild or myHero.dead) then
 		if self.Items == nil then return end
 		for i = 1, 6 do
 			self.Sprite[self.Items[i]]:Draw(WINDOW_W/self.MetaBuild.X+(i*self.MetaBuild.X2), WINDOW_W/self.MetaBuild.Y, 255);
