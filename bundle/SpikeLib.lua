@@ -4,7 +4,7 @@ function msg(msg)
 end
 
 --- Starting AutoUpdate
-local version = "0.100001";
+local version = "0.100002";
 local league = "6.16";
 local author = "spyk";
 local SCRIPT_NAME = "SpikeLib";
@@ -17,12 +17,12 @@ if ServerData then
 	ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil;
 	if ServerVersion then
 		if tonumber(version) < ServerVersion then
-			DelayAction(function() msg("New version found for Libraries "..ServerVersion) end, 3);
+			DelayAction(function() msg("New version found for SpikeLib "..ServerVersion) end, 3);
 			DelayAction(function() msg(">>Updating, please don't press F9<<") end, 4);
-			DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () msg("Libs updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 5);
+			DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () msg("SpikeLib updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 5);
 		end
 	else
-		DelayAction(function() msg("[LIBs]Error while downloading version info") end, 1);
+		DelayAction(function() msg("SpikeLib, error while downloading version info") end, 1);
 	end
 end
  --- End Of AutoUpdate
