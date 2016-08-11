@@ -1,87 +1,86 @@
--- Updated for MetaBuild SoonTM
-
 function msg(msg)
 	
-	PrintChat("<b><font color=\"#c0392b\">[</font><i><font color=\"#27ae60\">Spike</font> <font color=\"#2980b9\">Lib</font><font color=\"#c0392b\">'</font><font color=\"#27ae60\">s</font></i><font color=\"#c0392b\">]</font></b> <font color=\"#c5eff7\"> : " .. msg .. "</font>")
+	PrintChat("<b><font color=\"#c0392b\">[</font><i><font color=\"#27ae60\">Spike</font> <font color=\"#2980b9\">Lib</font><font color=\"#c0392b\">'</font><font color=\"#27ae60\">s</font></i><font color=\"#c0392b\">]</font></b> <font color=\"#c5eff7\"> : " .. msg .. "</font>");
 end
 
 --- Starting AutoUpdate
-local version = "0.064"
-local league = "6.13"
-local author = "spyk"
-local SCRIPT_NAME = "SpikeLib"
-local AUTOUPDATE = true
-local UPDATE_HOST = "raw.githubusercontent.com"
-local UPDATE_PATH = "/spyk1/BoL/master/bundle/SpikeLib.lua".."?rand="..math.random(1,10000)
-local UPDATE_FILE_PATH = LIB_PATH .. "SpikeLib.lua"
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-
-if AUTOUPDATE then
-	local ServerData = GetWebResult(UPDATE_HOST, "/spyk1/BoL/master/bundle/SpikeLib.version")
-	if ServerData then
-		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
-		if ServerVersion then
-			if tonumber(version) < ServerVersion then
-				DelayAction(function() msg("New version found for Libraries "..ServerVersion) end, 3)
-				DelayAction(function() msg(">>Updating, please don't press F9<<") end, 4)
-				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () msg("Libs updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 5)
-			end
+local version = "0.1";
+local league = "6.16";
+local author = "spyk";
+local SCRIPT_NAME = "SpikeLib";
+local UPDATE_HOST = "raw.githubusercontent.com";
+local UPDATE_PATH = "/spyk1/BoL/master/bundle/SpikeLib.lua".."?rand="..math.random(1,10000);
+local UPDATE_FILE_PATH = LIB_PATH .. "SpikeLib.lua";
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH;
+local ServerData = GetWebResult(UPDATE_HOST, "/spyk1/BoL/master/bundle/SpikeLib.version");
+if ServerData then
+	ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil;
+	if ServerVersion then
+		if tonumber(version) < ServerVersion then
+			DelayAction(function() msg("New version found for Libraries "..ServerVersion) end, 3);
+			DelayAction(function() msg(">>Updating, please don't press F9<<") end, 4);
+			DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () msg("Libs updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 5);
 		end
-		else
-			DelayAction(function() msg("[LIBs]Error while downloading version info")end, 1)
+	else
+		DelayAction(function() msg("[LIBs]Error while downloading version info") end, 1);
 	end
 end
  --- End Of AutoUpdate
+class 'GetPacketsFromLib'
+
+function GetPacketsFromLib:__init()
+	self.Var = {}
+	self.Var[1] = 48;
+	self.Var[2] = 80;
+	self.Var[3] = {[0x60] = 0x00,[0xE0] = 0x40,[0xD7] = 0x1F,[0xE7] = 0x1D,[0xDF] = 0x21,[0x11] = 0x1A,[0x0F] = 0x1B,[0xD1] = 0x22,[0xE1] = 0x20,[0xE9] = 0x1C,[0xCF] = 0x23};
+	self.Var[4] = 6;
+end
+
+function GetPacketsFromLib:Version()
+	return league
+end
 
 class 'Gold'
 
 	function Gold:Hero(unit)
-
-		return unit.gold
+		return unit.gold;
 	end
 
 class 'Stats'
 
 	function Stats:Kills(unit)
-
-		return unit:GetInt("CHAMPIONS_KILLED")
+		return unit:GetInt("CHAMPIONS_KILLED");
 	end
 
 	function Stats:Farm(unit)
-
-		return unit:GetInt("MINIONS_KILLED")
+		return unit:GetInt("MINIONS_KILLED");
 	end
 
 	function Stats:Death(unit)
-
-		return unit:GetInt("NUM_DEATHS")
+		return unit:GetInt("NUM_DEATHS");
 	end
 
 	function Stats:Assits(unit)
-
-		return unit:GetInt("ASSISTS")
+		return unit:GetInt("ASSISTS");
 	end
 
 class 'Item'
 
 	function Item:Buy(id)
-
-		BuyItem(id)
+		BuyItem(id);
 	end
 
 	function Item:Sell(SLOT)
-
-		SellItem(SLOT)
+		SellItem(SLOT);
 	end
 
 	function Item:FullSell()
-
-		SellItem(0)
+		SellItem(0);
 		SellItem(1)
-		SellItem(2)
-		SellItem(3)
-		SellItem(4)
-		SellItem(5)
+		SellItem(2);
+		SellItem(3);
+		SellItem(4);
+		SellItem(5);
 	end
 
 --{ CustomPermaShow.lua from https://github.com/Superx321/BoL/blob/master/common/CustomPermaShow.lua
