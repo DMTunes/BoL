@@ -6,7 +6,7 @@ end
 function LoadSpikeLib()
 	local LibPath = LIB_PATH.."SpikeLib.lua"
 	if not FileExist(LibPath) then
-		local Host = "raw.github.com"
+		local Host = "raw.githubusercontent.com"
 		local Path = "/spyk1/BoL/master/bundle/SpikeLib.lua".."?rand="..math.random(1,10000)
 		Alerte("Not libs found!")
 		DownloadFile("https://"..Host..Path, LibPath, function ()  end)
