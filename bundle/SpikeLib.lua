@@ -4,7 +4,7 @@ function msg(msg)
 end
 
 --- Starting AutoUpdate
-local version = "0.100002";
+local version = "0.100003";
 local league = "6.16";
 local author = "spyk";
 local SCRIPT_NAME = "SpikeLib";
@@ -92,6 +92,7 @@ if not _G.HidePermaShow then
 end
 
 if not _G.CPS then
+	if GetSave("scriptConfig")["Master"] == nil then return end
 	_G.CPS = {}
 	_G.CPS.Index = {}
 	_G.CPS.NoIndex = {}
@@ -103,6 +104,7 @@ if not _G.CPS then
 end
 
 function CustomPermaShow(TextVar, ValueVar, VisibleVar, PermaColorVar, OnColorVar, OffColorVar, IndexVar)
+	if GetSave("scriptConfig")["Master"] == nil then return end
 	if IndexVar then
 		local ItsNew = true
 		for i = 1,#_G.CPS.Index do
