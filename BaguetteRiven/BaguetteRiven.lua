@@ -15,10 +15,9 @@ local buffs = {
 	["NocturneW"] = true,
 	["kindredrnodeathbuff"] = true
 };
-local version = "0.111";
+local version = "0.112";
 local author = "spyk";
 local SCRIPT_NAME = "BaguetteRiven";
-local AUTOUPDATE = true;
 local UPDATE_HOST = "raw.githubusercontent.com";
 local UPDATE_PATH = "/spyk1/BoL/master/BaguetteRiven/BaguetteRiven.lua".."?rand="..math.random(1,10000);
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME;
@@ -1387,23 +1386,21 @@ function Riven:Animation(unit, animation)
 end
 
 function Riven:Update()
-	if AUTOUPDATE then
-		local ServerData = GetWebResult(UPDATE_HOST, "/spyk1/BoL/master/BaguetteRiven/BaguetteRiven.version")
-		if ServerData then
-			ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil;
-			if ServerVersion then
-				if tonumber(version) < ServerVersion then
-					self:Alerte("New version available "..ServerVersion);
-					self:Alerte(">>Updating, please don't press F9<<");
-					DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () self:Alerte("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3);
-				else
-					DelayAction(function() self:Alerte("Hello, "..GetUser()..". You got the latest version! ("..ServerVersion..")") end, 3);
-					self:CustomLoad();
-				end
+	local ServerData = GetWebResult(UPDATE_HOST, "/spyk1/BoL/master/BaguetteRiven/BaguetteRiven.version")
+	if ServerData then
+		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil;
+		if ServerVersion then
+			if tonumber(version) < ServerVersion then
+				self:Alerte("New version available "..ServerVersion);
+				self:Alerte(">>Updating, please don't press F9<<");
+				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () self:Alerte("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3);
+			else
+				DelayAction(function() self:Alerte("Hello, "..GetUser()..". You got the latest version! ("..ServerVersion..")") end, 3);
+				self:CustomLoad();
 			end
-		else
-			self:Alerte("Error downloading version info");
 		end
+	else
+		self:Alerte("Error downloading version info");
 	end
 end
 
@@ -1457,10 +1454,12 @@ function Riven:Ready()
 	else
 		self.RReady = false;
 	end
-	if myHero:GetSpellData(Flash).currentCd == 0 or myHero:CanUseSpell(Flash) == READY then
-		self.FlashReady = true;
-	else
-		self.FlashReady = false;
+	if Flash ~= nil then
+		if myHero:GetSpellData(Flash).currentCd == 0 or myHero:CanUseSpell(Flash) == READY then
+			self.FlashReady = true;
+		else
+			self.FlashReady = false;
+		end
 	end
 	if self.Tiamat then
 		if myHero:GetSpellData(self.TiamatSlot).currentCd == 0 or myHero:CanUseSpell(self.TiamatSlot) == READY then
