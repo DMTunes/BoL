@@ -14,6 +14,7 @@ function Smiterino:__init()
 		self.SmiteSlot = SUMMONER_2 
 	end
 	if self.SmiteSlot == nil then return end
+	PrintChat("<b><font color=\"#26A65B\">></font></b> <font color=\"#FEFEE2\"> BaguetteSmite loaded..</font>");
 	AddTickCallback(function()
 		self:CastSmite();
 	end);
@@ -37,3 +38,7 @@ end
 function Smiterino:SmiteDmg()
 	return max(20 * myHero.level + 370, 30 * myHero.level + 330, 40 * myHero.level + 240, 50 * myHero.level + 100)
 end
+
+AddLoadCallback(function()
+	Smiterino();
+end)
