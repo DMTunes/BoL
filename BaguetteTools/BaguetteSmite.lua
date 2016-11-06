@@ -5,8 +5,8 @@ local max = math.max
 function Smiterino:__init()
 	jungle = minionManager(MINION_JUNGLE, 600, myHero, MINION_SORT_DIST_ASC);
 	self.ToS = {
-		['SRU_RiftHerald17.1.1'] = {true}, -- Blue | Haut
-		['SRU_Baron12.1.1'] = {true}, -- Blue | Haut
+		['SRU_RiftHerald17.1.1'] = {true},
+		['SRU_Baron12.1.1'] = {true},
 	}
 	if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then 
 		self.SmiteSlot = SUMMONER_1 
@@ -14,7 +14,7 @@ function Smiterino:__init()
 		self.SmiteSlot = SUMMONER_2 
 	end
 	if self.SmiteSlot == nil then return end
-	PrintChat("<b><font color=\"#26A65B\">></font></b> <font color=\"#FEFEE2\"> BaguetteSmite loaded..</font>");
+	PrintChat("<b><font color=\"#26A65B\">></font></b> <font color=\"#FEFEE2\"> Smite by spyk..</font>");
 	AddTickCallback(function()
 		self:CastSmite();
 	end);
@@ -41,4 +41,4 @@ end
 
 AddLoadCallback(function()
 	Smiterino();
-end)
+end);
