@@ -4,8 +4,8 @@ function msg(msg)
 end
 
 --- Starting AutoUpdate
-local version = "0.100005";
-local league = "6.18";
+local version = "0.100006";
+local league = "6.23";
 local author = "spyk";
 local SCRIPT_NAME = "SpikeLib";
 local UPDATE_HOST = "raw.githubusercontent.com";
@@ -30,10 +30,10 @@ class 'GetPacketsFromLib'
 
 function GetPacketsFromLib:__init()
 	self.Var = {}
-	self.Var[1] = 257;
-	self.Var[2] = 80;
-	self.Var[3] = {[0x60] = 0x00,[0xE0] = 0x40,[0xD7] = 0x1F,[0xE7] = 0x1D,[0xDF] = 0x21,[0x11] = 0x1A,[0x0F] = 0x1B,[0xD1] = 0x22,[0xE1] = 0x20,[0xE9] = 0x1C,[0xCF] = 0x23};
-	self.Var[4] = 6;
+	self.Var[1] = 167;
+	self.Var[2] = 31;
+	self.Var[3] = {[0x9C] = 0x00,[0x9D] = 0x40,[0x04] = 0x1A,[0x0C] = 0x1C,[0x1C] = 0x20,[0x14] = 0x1E,[0x10] = 0x1F,[0x18] = 0x21, [0xE1] = 0x23,[0xE5] = 0x22,[0x08] = 0x1D};
+	self.Var[4] = 60;
 end
 
 function GetPacketsFromLib:Version()
