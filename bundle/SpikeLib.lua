@@ -1,7 +1,4 @@
-function msg(msg)
-	
-	PrintChat("<b><font color=\"#D2527F\">></font></b> <font color=\"#FEFEE2\"> " .. msg .. "</font>");
-end
+function msg(msg) PrintChat("<b><font color=\"#D2527F\">></font></b> <font color=\"#FEFEE2\"> " .. msg .. "</font>"); end
 
 --- Starting AutoUpdate
 local version = "0.100006";
