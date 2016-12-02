@@ -25,7 +25,6 @@ tWguoQKW07Ckl/fyyxFa4vfFAFGwsaUkgtNSIleB0CuIEOyUg]],_ENV.FILE_NAME,"e577dc2863e3
 
 function SPCallback:Var()
 	self.OnDashSpell = {
-		{name = "syndraq"},
 		{name = "ahritumble", duration = .25}, -- Ahri's r
 		{name = "akalishadowdance", duration = .25}, -- Akali r
 		{name = "headbutt", duration = .25}, -- Alistar w
@@ -137,6 +136,27 @@ function SPCallback:Var()
 		{name = "shenshadowdash"};
 		{name = "rocketjump"};
 		{name = "slashcast"};
+	};
+	self.ImmobileBuff = {
+		['aatroxpassivedeath'] = true,
+		['rebirth'] = true,
+		['bardrstasis'] = true,
+		['lissandrarself'] = true,
+		['pantheonesound'] = true,
+		['PantheonRJump'] = true,
+		['summonerteleport'] = true,
+		['zhonyasringshield'] = true,
+		['galioidolofdurand'] = true,
+		['missfortunebulletsound'] = true,
+		['alzaharnethergraspsound'] = true,
+		['infiniteduresssound'] = true,
+		['VelkozR'] = true,
+		['ReapTheWhirlwind'] = true,
+		['katarinarsound'] = true,
+		['fearmonger_marker'] = true,
+		['AbsoluteZero'] = true,
+		['Meditate'] = true,
+		['ShenStandUnited'] = true,
 	};
 end
 
