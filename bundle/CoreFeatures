@@ -1,0 +1,46 @@
+- Core :
+  - Unique save system. (/Scripts/Common/Saves/..)
+  - Function for my bundles.
+
+- Custom Callback : (SPCallback => https://raw.githubusercontent.com/spyk1/BoL/master/bundle/SPCallback.lua)
+  - OnDash.
+  - AntiGapCloser.
+  - Interruptable.
+  - Immobile.
+  
+- Prediction :
+  - Inbuilt prediction => SPred.
+  - Supporting HPred, FHPred, VPred.
+  
+- Orbwalking :
+  - Custom Orbwalker. (KoreanTop Bundle only)
+  - Supporting SAC, MMA, Pewalk, NebelwolfisOrbwalker.
+  
+- Evade :
+  - Spell drawing only.
+  (Tell me if you would like to get a version who dodge, like Evadeee, Dancing shoes, etc)
+
+- Drawing :
+  - Ranges.
+  - Text Informations.
+  - Damages prediction.
+  - Custom private sprites.
+  - SkinChanger.
+  - PermaShow Box.
+  - Awarness :
+    - Tower ranges.
+    - Hour.
+    - Waypoint.
+    - Cooldown tracker.
+    - Wards tracker.
+     - Recall tracker.
+  - Stream mode.
+
+- Utility :
+  - Auto Ignite / Auto Smite.
+  - Auto Buy.
+  - Auto Level. (Unique one)
+  - Auto Ward.
+  - Auto QSS.
+  - Auto Potions.
+  - Auto recorder.
