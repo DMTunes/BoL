@@ -347,7 +347,7 @@ function Kalista:CastQ(t, y)
 				return
 			end
 		end
-		if self.Ward[t.name] then
+		if t.maxHealth < 6 then
 			return
 		end
 		if self.Param.Pred == 1 then
@@ -911,7 +911,7 @@ function Kalista:Menu()
 		self.Param.Draw:addSubMenu("Misc Settings", "Misc");
 			self.Param.Draw.Misc:addParam("SKIN", "Enable Skin Changer :", SCRIPT_PARAM_ONOFF, false);
 			self.Param.Draw.Misc:setCallback("SKIN", function(skin) if skin then SetSkin(myHero, self.Param.Draw.Misc.skins-1); else SetSkin(myHero, -1); end end);
-			self.Param.Draw.Misc:addParam("skins", "Set a skin :", SCRIPT_PARAM_LIST, 1, {"Classic", "Blood Moon", "Championship"});
+			self.Param.Draw.Misc:addParam("skins", "Set a skin :", SCRIPT_PARAM_LIST, 1, {"Classic", "Blood Moon", "Championship", "SKT T1"});
 			self.Param.Draw.Misc:setCallback("skins", function(skin) if skin then if self.Param.Draw.Misc.SKIN then SetSkin(myHero, self.Param.Draw.Misc.skins-1); end end end);
 			self.Param.Draw.Misc:addParam("n1", "", SCRIPT_PARAM_INFO, "");
 			self.Param.Draw.Misc:addParam("PermaShow", "Display PermaShow :", SCRIPT_PARAM_ONOFF, true);
@@ -1204,12 +1204,6 @@ function Kalista:Var()
 		E = {range = 1000, delay = .25};
 		R = {range = 1100};
 	};
-	self.Ward = {
-		["YellowTrinket"] = true,
-		["BlueTrinket"] = true,
-		["SightWard"] = true,
-		["VisionWard"] = true,
-	};
 	self.buffs = {
 		["JudicatorIntervention"] = true,
 		["UndyingRage"] = true,
@@ -1270,7 +1264,7 @@ function Kalista:VIPLoader()
 	AddRemoveBuffCallback(function(unit, buff)
 		if unit and unit.isMe and buff.name == "recall" then
 			if self.Param.Extra.AutoBuy.Enable and InFountain() then 
-				if self.Param.Extra.AutoBuy.BlueTrinket then
+				if self.Param.Extra.AutoBuy.BlueTrinket and myHero.level > 9 then
 					BuyItem(3363);
 				end
 			end
@@ -1340,7 +1334,7 @@ function Kalista:WallHOPDraw()
 end
 
 function Kalista:Update()
-	local version = "0.80006";
+	local version = "0.87";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteKalista";
 	local UPDATE_HOST = "raw.githubusercontent.com";
