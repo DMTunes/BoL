@@ -1,0 +1,1 @@
+AddMsgCallback(function(msg,key) if key == 79 then for SLOT = ITEM_1, ITEM_6 do if myHero:GetSpellData(SLOT).name == "ItemVoidGate" then CastSpell(SLOT, 11849.241210938, 11414.454101563); end end end end);
