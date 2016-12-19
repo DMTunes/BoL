@@ -64,7 +64,7 @@ local priorityTable = {
     },
 };
 
-local version = "0.72";
+local version = "0.73";
 local author = "spyk";
 local SCRIPT_NAME = "BaguetteAnivia";
 local AUTOUPDATE = true;
@@ -114,6 +114,7 @@ function Anivia:_init()
 	self:Menu();
 	self:CustomLoad();
 	self:PriorityOnLoad();
+	self.LastQ = 0;
 end
 
 function Anivia:AutoBuy()
@@ -318,16 +319,15 @@ end
 
 function Anivia:KillSteal()
 	for _, unit in pairs(GetEnemyHeroes()) do
-		health = unit.health;
-		Qdmg = ((myHero:CanUseSpell(_Q) == READY and damageQ) or 0);
-		Edmg = ((myHero:CanUseSpell(_E) == READY and damageE) or 0);
-		Rdmg = ((myHero:CanUseSpell(_R) == READY and damageR) or 0);
+		local health = unit.health;
+		local Qdmg = ((myHero:CanUseSpell(_Q) == READY and damageQ) or 0);
+		local Rdmg = ((myHero:CanUseSpell(_R) == READY and damageR) or 0);
 		if GetDistance(unit) < 1000 then
 			if Param.KillSteal.Enable then
 				if health <= Qdmg and Param.KillSteal.UseQ and myHero:CanUseSpell(_Q) == READY and ValidTarget(unit) then
 					self:LogicQ(unit);
 				end
-				if health <= Edmg and Param.KillSteal.UseE and myHero:CanUseSpell(_E) == READY and ValidTarget(unit) then
+				if health <= self:EDmg(unit) and Param.KillSteal.UseE and myHero:CanUseSpell(_E) == READY and ValidTarget(unit) then
 					CastSpell(_E, unit);
 				end
 				if health <= Rdmg and Param.KillSteal.UseR and myHero:CanUseSpell(_R) == READY and ValidTarget(unit) then
@@ -341,6 +341,14 @@ function Anivia:KillSteal()
 			end
 		end
 	end
+end
+
+function Anivia:EDmg(unit)
+	local dmg = 25 * myHero:GetSpellData(_E).level + 25 + .5 * myHero.ap;
+	if self.chill[unit.networkID] ~= nil and self.chill[unit.networkID][1] > os.clock() then
+		dmg = dmg * 2;
+	end
+	return math.floor(myHero:CalcMagicDamage(unit, dmg))
 end
 
 function OnCreateObj(object)
@@ -406,14 +414,10 @@ end
 function Anivia:DetectQ()
 	local QZone = 150;
 	if CurrentMode == "Combo" then
-		if ValidTarget(Target) and Target.visible and not Target.dead and GetDistance(Target, QMissile) < 150 then
-			CastSpell(_Q);
-		else
-			for k, unit in ipairs(GetEnemyHeroes()) do
-				if ValidTarget(unit) and unit.visible and QMissile and not unit.dead then
-					if GetDistance(unit, QMissile) < 150 then
-						CastSpell(_Q);
-					end
+		for k, unit in ipairs(GetEnemyHeroes()) do
+			if ValidTarget(unit) and unit.visible and not unit.dead and unit.maxHealth > 6 then
+				if GetDistance(unit, QMissile) < 150 then
+					CastSpell(_Q);
 				end
 			end
 		end
@@ -454,9 +458,7 @@ function Anivia:DetectQ()
 end
 
 function Anivia:Combo()
-
 	if Target ~= nil then
-
 		if ValidTarget(Target) and Target.type == myHero.type and not self:Immune(Target) then
 			if Param.Combo.UseQ then
 				self:LogicQ(Target);
@@ -1363,12 +1365,16 @@ function Anivia:LogicQ(unit)
 		if Param.Pred.n1 == 1 then
 			CastPosition,  HitChance,  Position = VP:GetLineCastPosition(unit, SkillQ.delay, SkillQ.width, SkillQ.range, SkillQ.speed, myHero, false);
 			if HitChance >= 2 then
+				if self.LastQ + 0.1 > os.clock() then return end
 				CastSpell(_Q, CastPosition.x, CastPosition.z);
+				self.LastQ = os.clock();
 			end
 		elseif Param.Pred.n1 == 2 then
 			local CastPosition, HitChance = HPred:GetPredict(HP_Q, unit, myHero);
   			if HitChance >= 0 then
+  				if self.LastQ + 0.1 > os.clock() then return end
     			CastSpell(_Q, CastPosition.x, CastPosition.z);
+    			self.LastQ = os.clock();
   			end
 		else
 			self:Alertet("Cast(Q) bug???");
