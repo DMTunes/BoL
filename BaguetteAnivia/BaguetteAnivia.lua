@@ -64,7 +64,7 @@ local priorityTable = {
     },
 };
 
-local version = "0.73";
+local version = "0.74";
 local author = "spyk";
 local SCRIPT_NAME = "BaguetteAnivia";
 local AUTOUPDATE = true;
@@ -92,6 +92,7 @@ local TextList = {"Ignite = Kill", "Q = Kill", "DoubleQ = Kill", "Q + Ignite = K
 local KillText = {};
 local startTime = 0;
 local OeufTimerDraw = 0;
+local qActive = false
 
 class 'Anivia';
 	
@@ -248,7 +249,6 @@ function Anivia:CustomLoad()
 		if not myHero.dead then
 			ts:update()
 			Target = self:GetTarget();
-
 			self:Keys();
 			self:KillSteal();
 			self:WintoR(Target);
@@ -363,6 +363,7 @@ end
 function OnDeleteObj(object)
 	if object.name == "cryo_FlashFrost_mis.troy" then
 		QMissile = nil;
+		qActive = false
 	end
 	if object.name == "cryo_storm_green_team.troy" then
 		RMissile = nil;
@@ -1052,6 +1053,12 @@ function Anivia:ProSpell(unit, spell)
 	end
 end
 
+function OnProcessSpell(unit, spell)
+	if unit.isMe and spell.name == "FlashFrostSpell" then
+		qActive = true
+	end
+end
+
 function Anivia:OnDraw()
 	if not myHero.dead and not Param.Draw.Disable then
 		if myHero:CanUseSpell(_Q) == READY and Param.Draw.Spell.Q then 
@@ -1360,7 +1367,7 @@ function Anivia:WintoR(unit)
 end
 
 function Anivia:LogicQ(unit)
-	if QMissile ~= nil then return end
+	if QMissile ~= nil or qActive then return end
 	if unit ~= nil and GetDistance(unit) < SkillQ.range and myHero:CanUseSpell(_Q) == READY and unit.visible and not unit.dead then
 		if Param.Pred.n1 == 1 then
 			CastPosition,  HitChance,  Position = VP:GetLineCastPosition(unit, SkillQ.delay, SkillQ.width, SkillQ.range, SkillQ.speed, myHero, false);
@@ -1610,4 +1617,4 @@ function Anivia:OnUpdateBuff(unit, buff, stacks)
 	if buff.name:lower() == "chilled" and unit ~= nil then
 		self.chill[unit.networkID] = {os.clock() + 1.5, unit, buff};
 	end
-end
+end 
