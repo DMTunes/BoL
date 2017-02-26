@@ -1,8 +1,7 @@
 function msg(msg) PrintChat("<b><font color=\"#D2527F\">></font></b> <font color=\"#FEFEE2\"> " .. msg .. "</font>"); end
 
---- Starting AutoUpdate
-local version = "0.100006";
-local league = "6.23";
+local version = "0.11";
+local league = "7.4.";
 local author = "spyk";
 local SCRIPT_NAME = "SpikeLib";
 local UPDATE_HOST = "raw.githubusercontent.com";
@@ -22,63 +21,20 @@ if ServerData then
 		DelayAction(function() msg("SpikeLib, error while downloading version info") end, 1);
 	end
 end
- --- End Of AutoUpdate
+ 
 class 'GetPacketsFromLib'
 
 function GetPacketsFromLib:__init()
 	self.Var = {}
-	self.Var[1] = 167;
-	self.Var[2] = 31;
-	self.Var[3] = {[0x9C] = 0x00,[0x9D] = 0x40,[0x04] = 0x1A,[0x0C] = 0x1C,[0x1C] = 0x20,[0x14] = 0x1E,[0x10] = 0x1F,[0x18] = 0x21, [0xE1] = 0x23,[0xE5] = 0x22,[0x08] = 0x1D};
-	self.Var[4] = 60;
+	self.Var[1] = 10;
+	self.Var[2] = 6;
+	self.Var[3] = {[0x5A] = 0x00, [0xDB] = 0x40, [0x6C] = 0x00, [0xBB] = 0x40, [0xC4] = 0x23, [0x2A] = 0x1D, [0x40] = 0x1E, [0xBF] = 0x1D, [0x89] = 0x1F, [0x06] = 0x20, [0xE2] = 0x1F};
+	self.Var[4] = 35;
 end
 
 function GetPacketsFromLib:Version()
 	return league
 end
-
-class 'Gold'
-
-	function Gold:Hero(unit)
-		return unit.gold;
-	end
-
-class 'Stats'
-
-	function Stats:Kills(unit)
-		return unit:GetInt("CHAMPIONS_KILLED");
-	end
-
-	function Stats:Farm(unit)
-		return unit:GetInt("MINIONS_KILLED");
-	end
-
-	function Stats:Death(unit)
-		return unit:GetInt("NUM_DEATHS");
-	end
-
-	function Stats:Assits(unit)
-		return unit:GetInt("ASSISTS");
-	end
-
-class 'Item'
-
-	function Item:Buy(id)
-		BuyItem(id);
-	end
-
-	function Item:Sell(SLOT)
-		SellItem(SLOT);
-	end
-
-	function Item:FullSell()
-		SellItem(0);
-		SellItem(1)
-		SellItem(2);
-		SellItem(3);
-		SellItem(4);
-		SellItem(5);
-	end
 
 --{ CustomPermaShow.lua from https://github.com/Superx321/BoL/blob/master/common/CustomPermaShow.lua
 
