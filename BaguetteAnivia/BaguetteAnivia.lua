@@ -64,7 +64,7 @@ local priorityTable = {
     },
 };
 
-local version = "0.74";
+local version = "0.75";
 local author = "spyk";
 local SCRIPT_NAME = "BaguetteAnivia";
 local AUTOUPDATE = true;
@@ -92,7 +92,6 @@ local TextList = {"Ignite = Kill", "Q = Kill", "DoubleQ = Kill", "Q + Ignite = K
 local KillText = {};
 local startTime = 0;
 local OeufTimerDraw = 0;
-local qActive = false
 
 class 'Anivia';
 	
@@ -116,6 +115,7 @@ function Anivia:_init()
 	self:CustomLoad();
 	self:PriorityOnLoad();
 	self.LastQ = 0;
+	self.qActive = false;
 end
 
 function Anivia:AutoBuy()
@@ -274,7 +274,6 @@ function Anivia:CustomLoad()
 			end
 
 			self:AutoPotions();
-			self:DrawKillable();
 		end
 	end);
 	AddUnloadCallback(function()
@@ -284,6 +283,9 @@ function Anivia:CustomLoad()
 		self:Remove(unit, buff);
 	end);
 	AddProcessSpellCallback(function(unit, spell)
+		if unit.isMe and spell.name == "FlashFrostSpell" then
+			self.qActive = true;
+		end
 		self:ProSpell(unit, spell);
 	end);
 	AddDrawCallback(function()
@@ -291,6 +293,12 @@ function Anivia:CustomLoad()
 	end);
 	AddUpdateBuffCallback(function(unit, buff, Stacks)
 		self:OnUpdateBuff(unit, buff, Stacks);
+	end);
+	AddCreateObjCallback(function(object)
+		self:OnCreateObj(object);
+	end);
+	AddDeleteObjCallback(function(object)
+		self:OnDeleteObj(object);
 	end);
 
 	enemyMinions = minionManager(MINION_ENEMY, 700, myHero, MINION_SORT_HEALTH_ASC);
@@ -351,22 +359,26 @@ function Anivia:EDmg(unit)
 	return math.floor(myHero:CalcMagicDamage(unit, dmg))
 end
 
-function OnCreateObj(object)
-	if object.name == "cryo_FlashFrost_Player_mis.troy" then
-		QMissile = object;
-	end
-	if object.name == "cryo_storm_green_team.troy" then
-		RMissile = object;
+function Anivia:OnCreateObj(object)
+	if object.name ~= nil then
+		if object.name:lower() == "anivia_base_q_aoe_mis.troy" then
+			QMissile = object;
+		end
+		if object.name:lower() == "anivia_base_r_aoe_green.troy" then
+			RMissile = object;
+		end
 	end
 end
 
-function OnDeleteObj(object)
-	if object.name == "cryo_FlashFrost_mis.troy" then
-		QMissile = nil;
-		qActive = false
-	end
-	if object.name == "cryo_storm_green_team.troy" then
-		RMissile = nil;
+function Anivia:OnDeleteObj(object)
+	if object.name ~= nil then
+		if object.name:lower() == "anivia_base_q_aoe_mis.troy" then
+			QMissile = nil;
+			self.qActive = false;
+		end
+		if object.name:lower() == "anivia_base_r_aoe_green.troy" then
+			RMissile = nil;
+		end
 	end
 end
 
@@ -460,7 +472,7 @@ end
 
 function Anivia:Combo()
 	if Target ~= nil then
-		if ValidTarget(Target) and Target.type == myHero.type and not self:Immune(Target) then
+		if not self:Immune(Target) then
 			if Param.Combo.UseQ then
 				self:LogicQ(Target);
 			end
@@ -481,59 +493,6 @@ function Anivia:Combo()
 	if CurrentMode ~= "Combo" then
 		CurrentMode = "Combo";
 	end
-end
-
-function Anivia:DrawKillable()
-	for i = 1, heroManager.iCount, 1 do
-		local enemy = heroManager:getHero(i)
-		if enemy and ValidTarget(enemy) then
-			if enemy.team ~= myHero.team then 
-				if Ignite then
-					if (myHero:CanUseSpell(Ignite) == READY) then
-						iDmg = 40 + (20 * myHero.level)
-					elseif (myHero:CanUseSpell(Ignite) ~= READY) then
-						iDmg = 0
-					end
-				end
-				Qdmg = ((myHero:CanUseSpell(_Q) == READY and myHero:CalcMagicDamage(enemy,damageQ)) or 0);
-				Edmg = ((myHero:CanUseSpell(_E) == READY and myHero:CalcMagicDamage(enemy,damageE)) or 0);
-				Rdmg = ((myHero:CanUseSpell(_R) == READY and myHero:CalcMagicDamage(enemy,damageR)) or 0);
-				if iDmg > enemy.health then
-					KillText[i] = 1
-				elseif Qdmg > enemy.health then
-					KillText[i] = 2
-				elseif Qdmg*2 > enemy.health then
-					KillText[i] = 3
-				elseif Qdmg + iDmg > enemy.health then
-					KillText[i] = 4
-				elseif Qdmg*2 + iDmg > enemy.health then
-					KillText[i] = 5
-				elseif Qdmg + Edmg*2 > enemy.health then
-					KillText[i] = 6
-				elseif Qdmg*2 + Edmg*2 > enemy.health then
-					KillText[i] = 7
-				elseif Qdmg + Edmg*2 + iDmg > enemy.health then
-					KillText[i] = 9
-				elseif Qdmg*2 + Edmg*2 + iDmg > enemy.health then
-					KillText[i] = 9
-				elseif Qdmg + Edmg*2 + Rdmg > enemy.health then
-					KillText[i] = 11
-				elseif Qdmg*2 + Edmg*2 + Rdmg > enemy.health then
-					KillText[i] = 11
-				elseif Qdmg*2 + Edmg*2 + Rdmg*3 > enemy.health then
-					KillText[i] = 12
-				elseif Qdmg + Edmg*2 + Rdmg + iDmg > enemy.health then
-					KillText[i] = 13
-				elseif Qdmg*2 + Edmg*2 + Rdmg + iDmg > enemy.health then
-					KillText[i] = 14
-				elseif Qdmg*2 + Edmg*2 + Rdmg*3 + iDmg > enemy.health then
-					KillText[i] = 15
-				else
-					KillText[i] = 16
-				end 
-			end 
-		end 
-	end 
 end
 
 function Anivia:LaneClear()
@@ -976,7 +935,7 @@ end
 
 function Anivia:PriorityOnLoad()
     if heroManager.iCount < 10 then
-		self:Alerte("Impossible to Arrange Priority Table.. There is not enough champions... (less than 10)");
+		return
     else
         self:arrangePrioritys();
     end
@@ -1053,12 +1012,6 @@ function Anivia:ProSpell(unit, spell)
 	end
 end
 
-function OnProcessSpell(unit, spell)
-	if unit.isMe and spell.name == "FlashFrostSpell" then
-		qActive = true
-	end
-end
-
 function Anivia:OnDraw()
 	if not myHero.dead and not Param.Draw.Disable then
 		if myHero:CanUseSpell(_Q) == READY and Param.Draw.Spell.Q then 
@@ -1093,42 +1046,6 @@ function Anivia:OnDraw()
 				local Vec2 = Vector(QMissile.pos) + (Vector(myHero.pos) - Vector(QMissile.pos)):normalized();
 				DrawCircle3D(Vec2.x, Vec2.y, Vec2.z, 200, 1, 0xFFFFFFFF);
 			end
-		end
-
-		if Param.Draw.Damages.Bar then
-			for _, unit in pairs(GetEnemyHeroes()) do
-				if unit ~= nil and GetDistance(unit) < 3000 then
-					local Center = GetUnitHPBarPos(unit)
-					Qdmg = ((myHero:CanUseSpell(_Q) == READY and myHero:CalcMagicDamage(unit,damageQ)) or 0)
-					Edmg = ((myHero:CanUseSpell(_E) == READY and myHero:CalcMagicDamage(unit,damageE)) or 0)
-					Rdmg = ((myHero:CanUseSpell(_R) == READY and myHero:CalcMagicDamage(unit,damageR)) or 0)
-					local Y3QER = Qdmg*2 + Edmg*2 + Rdmg*2
-					if Center.x > -100 and Center.x < WINDOW_W+100 and Center.y > -100 and Center.y < WINDOW_H+100 then
-						local off = GetUnitHPBarOffset(unit)
-						local y=Center.y + (off.y * 53) + 2
-						local xOff = ({['AniviaEgg'] = -0.1,['Darius'] = -0.05,['Renekton'] = -0.05,['Sion'] = -0.05,['Thresh'] = -0.03,})[unit.charName]
-						local x = Center.x + ((xOff or 0) * 140) - 66
-						if not TargetHaveBuff("SummonerExhaust", myHero) then
-							dmg = unit.health - Y3QER
-						elseif TargetHaveBuff("SummonerExhaust", myHero) then
-							dmg = unit.health - (Y3QER-((Y3QER*40)/100))
-						end
-						DrawLine(x + ((unit.health /unit.maxHealth) * 104),y, x+(((dmg > 0 and dmg or 0) / unit.maxHealth) * 104),y,9, GetDistance(unit) < 3000 and 0x6699FFFF)
-					end
-				end
-			end
-		end
-
-		if Param.Draw.Damages.Killable then
-			for i = 1, heroManager.iCount do
-				local enemy = heroManager:getHero(i)
-				if enemy and ValidTarget(enemy) then
-					local barPos = WorldToScreen(D3DXVECTOR3(enemy.x, enemy.y, enemy.z))
-					local PosX = barPos.x - 35
-					local PosY = barPos.y - 50  
-					DrawText(TextList[KillText[i]], 15, PosX, PosY, ARGB(255,255,204,0))
-				end 
-			end 
 		end
 	end
 end
@@ -1367,11 +1284,11 @@ function Anivia:WintoR(unit)
 end
 
 function Anivia:LogicQ(unit)
-	if QMissile ~= nil or qActive then return end
+	if QMissile ~= nil or self.qActive then return end
 	if unit ~= nil and GetDistance(unit) < SkillQ.range and myHero:CanUseSpell(_Q) == READY and unit.visible and not unit.dead then
 		if Param.Pred.n1 == 1 then
 			CastPosition,  HitChance,  Position = VP:GetLineCastPosition(unit, SkillQ.delay, SkillQ.width, SkillQ.range, SkillQ.speed, myHero, false);
-			if HitChance >= 2 then
+			if HitChance >= 1 then
 				if self.LastQ + 0.1 > os.clock() then return end
 				CastSpell(_Q, CastPosition.x, CastPosition.z);
 				self.LastQ = os.clock();
