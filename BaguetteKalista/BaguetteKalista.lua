@@ -347,8 +347,8 @@ function Kalista:CastQ(t, y)
 				return
 			end
 		end
-		if t.maxHealth < 6 then
-			return
+		if t.maxHealth < 6 or not t.visible or t.dead or t.name:lower():find("ward") or t.name:lower():find("plant") or t.name:lower():find("camp") then
+			return false
 		end
 		if self.Param.Pred == 1 then
 			local CastPosition, HitChance, Position = VP:GetLineCastPosition(t, .25, 70, 1000, 1750, myHero, false);
@@ -1334,7 +1334,7 @@ function Kalista:WallHOPDraw()
 end
 
 function Kalista:Update()
-	local version = "0.87";
+	local version = "0.88";
 	local author = "spyk";
 	local SCRIPT_NAME = "BaguetteKalista";
 	local UPDATE_HOST = "raw.githubusercontent.com";
